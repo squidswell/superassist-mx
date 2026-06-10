@@ -100,15 +100,16 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .flag-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 .flag-bar.red .flag-dot{background:var(--red)}
 .flag-bar.amber .flag-dot{background:var(--amber)}
-.day-scroll{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;scrollbar-width:none}
+.day-scroll{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .day-scroll::-webkit-scrollbar{display:none}
+.plan-sticky-header{position:sticky;top:97px;background:var(--bg);z-index:80;padding:8px 0 6px;margin:0 0 8px;border-bottom:0.5px solid var(--border)}
 .day-chip{flex-shrink:0;padding:6px 10px;border-radius:8px;background:var(--surface);border:0.5px solid var(--border);text-align:center;cursor:pointer;min-width:44px}
 .day-chip.today{background:var(--surface2);border-color:rgba(96,165,250,0.4)}
 .day-chip.past{opacity:0.5}
 .day-chip .dc-d{font-size:9px;color:var(--muted);margin-bottom:2px}
 .day-chip .dc-n{font-size:13px;font-weight:600}
 .day-chip.today .dc-n{color:var(--blue)}
-.plan-date-header{font-size:14px;font-weight:600;margin-bottom:12px}
+.plan-date-header{font-size:14px;font-weight:600;margin:8px 0 0}
 .ac-plan-block{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;margin-bottom:6px;overflow:hidden}
 .ac-plan-header{padding:9px 12px;display:flex;align-items:center;gap:8px;border-bottom:0.5px solid var(--border)}
 .ac-plan-reg{font-size:12px;font-weight:700;letter-spacing:0.04em}
@@ -433,7 +434,7 @@ async function renderDailyPlan(date){
   const priorities=planData.items.filter(i=>i.item_type==='priority');
   const defaultFacilities=['FOD walk','Fuel bowser full at end of day','Empty waste fuel','End of day hangar clean','Daily inspection KPI','Daily inspection OMO','UTE inspection','Tug inspection','Tool control'];
 
-  let html='<div class="day-scroll" id="plan-day-scroll">';
+  let html='<div class="plan-sticky-header"><div class="day-scroll" id="plan-day-scroll">';
   for(let i=-7;i<=7;i++){
     const d=addDays(today,i);
     const diso=dateISO(d);
@@ -441,7 +442,7 @@ async function renderDailyPlan(date){
     html+=`<div class="day-chip${isToday?' today':''}${isPast?' past':''}" style="${isSel&&!isToday?'border-color:rgba(255,255,255,0.3)':''}" onclick="renderDailyPlan(new Date('${diso}'))"><div class="dc-d">${DAYS_S[d.getDay()]}</div><div class="dc-n">${d.getDate()}</div></div>`;
   }
   html+='</div>';
-  html+=`<div class="plan-date-header">${fmtDate(date)}</div>`;
+  html+=`<div class="plan-date-header">${fmtDate(date)}</div></div>`;
   conflicts.forEach(c=>{html+=`<div class="alert red"><div class="alert-dot"></div><div class="alert-text"><strong>Schedule conflict</strong> — ${c.msg}</div></div>`});
 
   html+='<div class="sec-label">Aircraft</div>';
