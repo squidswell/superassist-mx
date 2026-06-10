@@ -426,6 +426,8 @@ async function renderDailyPlan(date){
   currentPlanDate=date;
   const today=new Date();
   const iso=dateISO(date);
+  // Always fetch fresh data from DB — don't use cache when switching days
+  delete planCache[iso];
   const planData = await loadPlanData(iso);
   const todayFlights=appData.flights.filter(f=>f.flight_date===iso);
   const todayStaff=appData.staff.filter(s=>s.shift_date===iso);
@@ -507,33 +509,31 @@ async function promptAddItem(type, iso){
 }
 
 function handleFacilityTap(el){
-  const i=parseInt(el.getAttribute('data-facility'));
   const iso=el.getAttribute('data-iso');
   const makeComplete=el.getAttribute('data-complete')==='true';
   const content=el.querySelector('.check-text').textContent;
-  // Update data attribute for next tap
-  el.setAttribute('data-complete', String(!makeComplete));
   toggleFacility(content, makeComplete, iso);
 }
 
 async function toggleFacility(content, makeComplete, iso){
-  // Optimistically update the UI immediately (no re-render, no scroll jump)
-  const items=document.querySelectorAll('#tab-dailyplan .check-item');
-  items.forEach(el=>{
-    const txt=el.querySelector('.check-text');
-    if(txt && txt.textContent===content){
-      el.classList.toggle('done',makeComplete);
-      el.querySelector('.check-box').classList.toggle('checked',makeComplete);
-    }
-  });
-  // Persist to database — find existing record or create one
-  const {data:existing}=await db.from('plan_items').select('id').eq('plan_date',iso).eq('item_type','facility').eq('content',content).maybeSingle();
+  // Delete cache first to ensure clean state
+  delete planCache[iso];
+  // Persist to database — upsert by content+date to prevent duplicates
+  const {data:existing}=await db.from('plan_items')
+    .select('id')
+    .eq('plan_date',iso)
+    .eq('item_type','facility')
+    .eq('content',content)
+    .maybeSingle();
   if(existing){
     await db.from('plan_items').update({is_complete:makeComplete}).eq('id',existing.id);
   } else {
     await db.from('plan_items').insert({plan_date:iso,item_type:'facility',content,is_complete:makeComplete});
   }
-  delete planCache[iso];
+  // Re-render from fresh database state — scroll position preserved
+  const scrollPos=document.getElementById('tab-dailyplan').scrollTop;
+  await renderDailyPlan(currentPlanDate);
+  setTimeout(()=>{document.getElementById('tab-dailyplan').scrollTop=scrollPos;},150);
 }
 
 
