@@ -272,7 +272,12 @@ let currentPlanDate=new Date();
 let stpExpanded=false;
 let recognition=null;
 
-function todayISO(){return new Date().toISOString().split('T')[0]}
+function todayISO(){
+  // Use Fiji local date (UTC+12) to avoid timezone mismatch with Supabase
+  const now = new Date();
+  const fiji = new Date(now.getTime() + (12 * 60 * 60 * 1000));
+  return fiji.toISOString().split('T')[0];
+}
 function dateISO(d){return d.toISOString().split('T')[0]}
 function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
 function fmtDate(d){return `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`}
@@ -411,7 +416,14 @@ function renderDailyPlan(date){
   if(todayStaff.length>0){
     html+='<div class="sec-label">Staff movements</div>';
     const groups={};
-    todayStaff.forEach(s=>{const k=s.shift_start||'TBC';if(!groups[k])groups[k]=[];groups[k].push(s.name.split(' ')[0])});
+    const ROLE_ORDER = ['Maintenance Supervisor','DHC6 B1 LAME','DHC6 B2 LAME','AS350B2 B1 LAME','AME','Base Detailer'];
+  todayStaff.sort((a,b)=>{
+    const ai = ROLE_ORDER.indexOf(a.role);
+    const bi = ROLE_ORDER.indexOf(b.role);
+    if(ai !== bi) return (ai===-1?99:ai) - (bi===-1?99:bi);
+    return (a.shift_start||'').localeCompare(b.shift_start||'');
+  });
+  todayStaff.forEach(s=>{const k=s.shift_start||'TBC';if(!groups[k])groups[k]=[];groups[k].push(s.name.split(' ')[0])});
     Object.keys(groups).sort().forEach(t=>{html+=`<div class="staff-move-card"><div class="sm-time">${t}</div><div class="sm-names">${groups[t].join(', ')}</div></div>`});
   }
 
