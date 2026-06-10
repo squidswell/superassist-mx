@@ -462,17 +462,17 @@ async function renderDailyPlan(date){
 
   html+=`<div id="stp-container">${renderSTP(date)}</div>`;
 
+  // Facilities — fixed standard checklist, always fully visible, tick state persists per day
   html+='<div class="sec-label">Facilities</div><div class="checklist">';
-  if(facilities.length>0){
-    facilities.forEach(item=>{
-      html+=`<div class="check-item${item.is_complete?' done':''}" onclick="togglePlanItem('${item.id}',${!item.is_complete},'${iso}')"><div class="check-box${item.is_complete?' checked':''}"></div><span class="check-text">${item.content}</span><span onclick="event.stopPropagation();deletePlanItem('${item.id}','${iso}')" style="font-size:18px;color:var(--muted);padding-left:8px;opacity:0.4;cursor:pointer">×</span></div>`;
-    });
-  } else {
-    defaultFacilities.forEach((item,i)=>{
-      html+=`<div class="check-item" id="check-${i}" onclick="saveDefaultCheck(${i},'${item}','${iso}')"><div class="check-box" id="cb-${i}"></div><span class="check-text">${item}</span></div>`;
-    });
-  }
-  html+=`<button class="add-btn" onclick="promptAddItem('facility','${iso}')">+ Add item</button></div>`;
+  // Build a lookup of which facility items are marked complete for this day
+  const facilityState={};
+  facilities.forEach(f=>{facilityState[f.content]={id:f.id,complete:f.is_complete}});
+  defaultFacilities.forEach((item,i)=>{
+    const state=facilityState[item];
+    const isComplete=state?state.complete:false;
+    html+=`<div class="check-item${isComplete?' done':''}" onclick="toggleFacility('${item.replace(/'/g,"\\\\'")}',${!isComplete},'${iso}')"><div class="check-box${isComplete?' checked':''}"></div><span class="check-text">${item}</span></div>`;
+  });
+  html+='</div>';
 
   html+=`<div class="sec-label">My priorities</div><div>`;
   priorities.forEach(item=>{html+=`<div class="priority-item" style="display:flex;justify-content:space-between">${item.content}<span onclick="deletePlanItem('${item.id}','${iso}')" style="font-size:18px;color:var(--muted);opacity:0.4;cursor:pointer;flex-shrink:0;margin-left:8px">×</span></div>`});
@@ -497,12 +497,24 @@ async function promptAddItem(type, iso){
   setTimeout(()=>{document.getElementById('tab-dailyplan').scrollTop=scrollPos;},50);
 }
 
-async function saveDefaultCheck(i, content, iso){
-  const box=document.getElementById('cb-'+i);
-  const item=document.getElementById('check-'+i);
-  if(box) box.classList.toggle('checked');
-  if(item) item.classList.toggle('done');
-  await savePlanItem(iso,'facility',content,true,i);
+async function toggleFacility(content, makeComplete, iso){
+  // Optimistically update the UI immediately (no re-render, no scroll jump)
+  const items=document.querySelectorAll('#tab-dailyplan .check-item');
+  items.forEach(el=>{
+    const txt=el.querySelector('.check-text');
+    if(txt && txt.textContent===content){
+      el.classList.toggle('done',makeComplete);
+      el.querySelector('.check-box').classList.toggle('checked',makeComplete);
+    }
+  });
+  // Persist to database — find existing record or create one
+  const {data:existing}=await db.from('plan_items').select('id').eq('plan_date',iso).eq('item_type','facility').eq('content',content).maybeSingle();
+  if(existing){
+    await db.from('plan_items').update({is_complete:makeComplete}).eq('id',existing.id);
+  } else {
+    await db.from('plan_items').insert({plan_date:iso,item_type:'facility',content,is_complete:makeComplete});
+  }
+  delete planCache[iso];
 }
 
 
