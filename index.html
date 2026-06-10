@@ -470,7 +470,7 @@ function getStpStaff(date){
   const staff=dated.length>0?dated:base;
   // Apply any day-specific time overrides stored in stpTimes
   const overrides=stpTimes[iso]||{};
-  return staff.map(s=>({...s,shift_start:overrides[s.id]||s.shift_start,_planDate:iso}));
+  return sortByRole(staff.map(s=>({...s,shift_start:overrides[s.id]||s.shift_start,_planDate:iso})));
 }
 
 function renderSTP(date){
@@ -561,10 +561,18 @@ function addItem(type){
 }
 
 // STAFF
+const ROLE_ORDER = ['Maintenance Supervisor','DHC6 B1 LAME','DHC6 B2 LAME','AS350B2 B1 LAME','AME','Base Detailer'];
+function sortByRole(list){
+  return [...list].sort((a,b)=>{
+    const ai=ROLE_ORDER.indexOf(a.role), bi=ROLE_ORDER.indexOf(b.role);
+    if(ai!==bi)return (ai===-1?99:ai)-(bi===-1?99:bi);
+    return (a.shift_start||'').localeCompare(b.shift_start||'');
+  });
+}
 function renderStaff(){
   const today=new Date();
   const iso=todayISO();
-  const todayStaff=appData.staff.filter(s=>s.shift_date===iso);
+  const todayStaff=sortByRole(appData.staff.filter(s=>s.shift_date===iso));
   if(todayStaff.length===0){
     document.getElementById('tab-staff').innerHTML='<p style="color:var(--muted);font-size:13px;font-style:italic;padding:20px 0">No staff data for today. Upload today\'s shift report.</p>';
     return;
