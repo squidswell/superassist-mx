@@ -10,23 +10,15 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.5;min-height:100vh;overflow-x:hidden}
 .app{max-width:480px;margin:0 auto;padding-bottom:120px}
-
-/* TOPBAR */
 .topbar{padding:14px 16px 10px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg);z-index:100}
 .topbar h1{font-size:15px;font-weight:600;letter-spacing:0.02em}
 .topbar p{font-size:11px;color:var(--muted);margin-top:1px}
 .topbar-right{font-size:11px;color:var(--muted);text-align:right}
-
-/* TABS */
-.tab-bar{display:flex;gap:3px;padding:10px 16px 0;background:var(--bg);position:sticky;top:57px;z-index:99;border-bottom:0.5px solid var(--border);padding-bottom:0}
+.tab-bar{display:flex;gap:3px;padding:10px 16px 0;background:var(--bg);position:sticky;top:57px;z-index:99;border-bottom:0.5px solid var(--border)}
 .tab-btn{flex:1;text-align:center;font-size:11px;font-weight:600;padding:8px 2px;border-bottom:2px solid transparent;color:var(--muted);letter-spacing:0.03em;cursor:pointer;background:none;border-top:none;border-left:none;border-right:none;transition:color 0.15s}
 .tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
-
-/* TAB CONTENT */
 .tab-content{display:none;padding:14px 16px 0}
 .tab-content.active{display:block}
-
-/* ALERTS */
 .alert{border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
 .alert.red{background:var(--red-bg);border:0.5px solid rgba(255,77,77,0.3)}
 .alert.amber{background:var(--amber-bg);border:0.5px solid rgba(245,158,11,0.3)}
@@ -39,38 +31,24 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .alert.red .alert-text{color:#fca5a5}
 .alert.amber .alert-text{color:#fcd34d}
 .alert.blue .alert-text{color:#93c5fd}
-
-/* SECTION LABEL */
 .sec-label{font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
-
-/* BADGES */
 .badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;letter-spacing:0.02em}
 .badge-ok{background:var(--green-bg);color:var(--green)}
 .badge-aog{background:var(--red-bg);color:var(--red)}
 .badge-us{background:var(--amber-bg);color:var(--amber)}
 .badge-mx{background:var(--blue-bg);color:var(--blue)}
 .badge-vip{background:var(--purple-bg);color:var(--purple);font-size:9px}
-
-/* AIRCRAFT CARDS */
 .ac-card{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden}
 .ac-card.conflict{border-color:rgba(255,77,77,0.4)}
-.ac-header{padding:11px 13px;display:flex;align-items:center;gap:10px;border-bottom:0.5px solid var(--border);cursor:pointer}
-.ac-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;letter-spacing:0.03em;flex-shrink:0}
-.ac-icon.kpi{background:rgba(245,158,11,0.2);color:var(--amber)}
-.ac-icon.omo{background:var(--green-bg);color:var(--green)}
-.ac-icon.isl{background:var(--red-bg);color:var(--red)}
-.ac-icon.isl.ok{background:var(--green-bg);color:var(--green)}
+.ac-header{padding:11px 13px;display:flex;align-items:center;gap:10px;border-bottom:0.5px solid var(--border)}
 .ac-reg{font-size:14px;font-weight:600;letter-spacing:0.03em;flex:1}
 .ac-detail-row{padding:7px 13px;font-size:11px;color:var(--muted);border-bottom:0.5px solid var(--border)}
-.ac-due-row{padding:7px 13px;font-size:11px;color:var(--red);border-bottom:0.5px solid var(--border)}
 .flight-row{display:flex;align-items:center;padding:7px 13px;gap:8px;border-bottom:0.5px solid rgba(255,255,255,0.04)}
 .flight-row:last-child{border-bottom:none}
 .fl-time{font-size:12px;font-weight:500;min-width:80px;font-variant-numeric:tabular-nums}
 .fl-route{font-size:12px;color:var(--muted);flex:1}
 .fl-pax{font-size:11px;color:var(--muted)}
 .no-flights{padding:10px 13px;font-size:12px;color:var(--muted);font-style:italic}
-
-/* FUEL */
 .fuel-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px}
 .fuel-card{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:10px 12px}
 .fuel-b-label{font-size:9px;color:var(--muted);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:3px}
@@ -81,8 +59,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .fuel-total-card{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
 .fuel-total-label{font-size:11px;color:var(--muted)}
 .fuel-total-val{font-size:14px;font-weight:600}
-
-/* STAFF CARDS */
 .staff-card{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden}
 .staff-card.flagged{border-color:rgba(255,77,77,0.4)}
 .staff-card.warned{border-color:rgba(245,158,11,0.35)}
@@ -93,7 +69,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .pill-rdo{background:var(--blue-bg);color:var(--blue)}
 .pill-al{background:var(--purple-bg);color:var(--purple)}
 .pill-sick{background:var(--red-bg);color:var(--red)}
-.pill-off{background:rgba(255,255,255,0.06);color:var(--muted)}
 .sc-stats{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:0.5px solid var(--border)}
 .stat{padding:8px 12px;border-right:0.5px solid var(--border)}
 .stat:last-child{border-right:none}
@@ -118,7 +93,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .ds-b .ds-txt{color:var(--green)}
 .ds-rdo .ds-txt{color:var(--blue)}
 .ds-al .ds-txt{color:var(--purple)}
-.ds-off .ds-txt{color:var(--muted)}
 .ds-time{font-size:8px;font-weight:600;color:var(--green);line-height:1.2}
 .flag-bar{padding:7px 13px;font-size:11px;display:flex;align-items:center;gap:6px}
 .flag-bar.red{background:var(--red-bg);border-top:0.5px solid rgba(255,77,77,0.3);color:#fca5a5}
@@ -126,8 +100,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .flag-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 .flag-bar.red .flag-dot{background:var(--red)}
 .flag-bar.amber .flag-dot{background:var(--amber)}
-
-/* DAILY PLAN */
 .day-scroll{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;scrollbar-width:none}
 .day-scroll::-webkit-scrollbar{display:none}
 .day-chip{flex-shrink:0;padding:6px 10px;border-radius:8px;background:var(--surface);border:0.5px solid var(--border);text-align:center;cursor:pointer;min-width:44px}
@@ -147,10 +119,10 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .fl-line .fl-r{color:var(--muted)}
 .checklist{display:flex;flex-direction:column;gap:4px}
 .check-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface);border:0.5px solid var(--border);border-radius:8px;cursor:pointer}
-.check-box{width:16px;height:16px;border-radius:4px;border:0.5px solid rgba(255,255,255,0.2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:background 0.15s}
+.check-box{width:16px;height:16px;border-radius:4px;border:0.5px solid rgba(255,255,255,0.2);flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .check-box.checked{background:var(--green);border-color:var(--green)}
 .check-box.checked::after{content:'';width:8px;height:5px;border-left:1.5px solid #0f1117;border-bottom:1.5px solid #0f1117;transform:rotate(-45deg) translateY(-1px);display:block}
-.check-text{font-size:12px;flex:1;transition:opacity 0.15s}
+.check-text{font-size:12px;flex:1}
 .check-item.done .check-text{text-decoration:line-through;opacity:0.4}
 .priority-item{background:var(--surface);border:0.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:12px;margin-bottom:4px;line-height:1.5}
 .priority-item .pi-sub{font-size:11px;color:var(--muted);margin-top:3px}
@@ -164,24 +136,25 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .sm-names{font-size:12px;line-height:1.6}
 
 /* START TIME PLANNER */
-.stp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.stp-nav{background:var(--surface);border:0.5px solid var(--border);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--text)}
-.stp-date{font-size:13px;font-weight:600}
-.stp-row{display:flex;align-items:center;background:var(--surface);border:0.5px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:4px;cursor:pointer}
+.stp-toggle{display:flex;align-items:center;justify-content:space-between;padding:8px 0;cursor:pointer;margin-bottom:6px}
+.stp-toggle-label{font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)}
+.stp-toggle-btn{font-size:11px;color:var(--blue);padding:3px 10px;background:var(--blue-bg);border-radius:20px;border:0.5px solid rgba(96,165,250,0.2)}
+.stp-list{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}
+.stp-row{display:flex;align-items:center;background:var(--surface);border:0.5px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer}
 .stp-name{flex:1;font-size:13px}
 .stp-time{font-size:13px;font-weight:600;color:var(--green);background:rgba(52,211,153,0.1);padding:4px 10px;border-radius:6px;font-variant-numeric:tabular-nums}
 .stp-time.unset{color:var(--muted);background:rgba(255,255,255,0.05)}
-.draft-box{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:12px;margin-top:8px}
+.draft-box{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:12px}
 .draft-label{font-size:9px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
 .draft-content{font-size:12px;color:var(--text);font-family:monospace;line-height:1.8;margin-bottom:10px}
 .copy-btn{width:100%;background:var(--green-bg);border:0.5px solid rgba(52,211,153,0.3);border-radius:8px;padding:10px;font-size:13px;font-weight:600;color:var(--green);cursor:pointer;letter-spacing:0.02em}
 
-/* TIME PICKER OVERLAY */
+/* TIME PICKER */
 .picker-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;display:flex;align-items:flex-end;justify-content:center}
 .picker-sheet{background:#1a1d27;border-radius:16px 16px 0 0;padding:16px;width:100%;max-width:480px}
 .picker-title{font-size:13px;font-weight:600;text-align:center;margin-bottom:14px;color:var(--muted)}
 .picker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
-.picker-opt{background:var(--surface2);border:0.5px solid var(--border);border-radius:10px;padding:12px 4px;text-align:center;font-size:14px;font-weight:600;cursor:pointer;font-variant-numeric:tabular-nums;transition:background 0.1s}
+.picker-opt{background:var(--surface2);border:0.5px solid var(--border);border-radius:10px;padding:12px 4px;text-align:center;font-size:14px;font-weight:600;cursor:pointer;font-variant-numeric:tabular-nums}
 .picker-opt.selected{background:var(--green-bg);border-color:rgba(52,211,153,0.4);color:var(--green)}
 .picker-cancel{width:100%;background:var(--surface2);border:0.5px solid var(--border);border-radius:10px;padding:12px;font-size:13px;color:var(--muted);cursor:pointer}
 
@@ -194,8 +167,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .ac-tab-reg{font-size:15px;font-weight:700;letter-spacing:0.03em}
 .ac-tab-times{font-size:12px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
 .ac-tab-times span{color:var(--text)}
-
-/* MONTHLY SCHEDULE */
 .month-view{background:var(--bg);position:fixed;inset:0;z-index:150;overflow-y:auto;max-width:480px;margin:0 auto}
 .month-header{padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:0.5px solid var(--border);position:sticky;top:0;background:var(--bg)}
 .month-back{background:var(--surface);border:0.5px solid var(--border);border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer}
@@ -210,9 +181,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .mr-mx{color:var(--amber)}
 .mr-conflict{color:var(--red);font-size:11px}
 .mr-dash{color:rgba(255,255,255,0.15)}
-
-/* REMINDERS */
 .reminder-item{background:var(--blue-bg);border:0.5px solid rgba(96,165,250,0.2);border-radius:10px;padding:10px 12px;font-size:12px;color:#93c5fd;margin-bottom:6px;line-height:1.5}
+.conflict-flag{font-size:10px;background:var(--red-bg);color:var(--red);padding:2px 7px;border-radius:20px;border:0.5px solid rgba(255,77,77,0.3)}
 
 /* CHAT BAR */
 .chat-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:0.5px solid var(--border);padding:10px 16px 16px;max-width:480px;margin:0 auto;z-index:90}
@@ -221,10 +191,10 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .chat-input::placeholder{color:var(--muted)}
 .chat-input:focus{border-color:rgba(96,165,250,0.4)}
 .chat-send{background:var(--blue);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
-.chat-mic{background:var(--surface);border:0.5px solid var(--border);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background 0.15s}
-.chat-mic.listening{background:var(--red-bg);border-color:rgba(255,77,77,0.4)}
+.chat-mic{background:var(--surface);border:0.5px solid var(--border);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--muted)}
+.chat-mic.listening{background:var(--red-bg);border-color:rgba(255,77,77,0.5);color:var(--red)}
+.mic-hint{font-size:10px;color:var(--muted);text-align:center;margin-bottom:4px;height:14px;transition:opacity 0.2s}
 
-/* LOADING */
 .loading{display:flex;align-items:center;justify-content:center;padding:60px 0;color:var(--muted);font-size:13px}
 .dot-pulse{display:inline-flex;gap:4px;margin-left:8px}
 .dot-pulse span{width:4px;height:4px;background:var(--muted);border-radius:50%;animation:pulse 1.2s ease-in-out infinite}
@@ -232,9 +202,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .dot-pulse span:nth-child(3){animation-delay:0.4s}
 @keyframes pulse{0%,80%,100%{opacity:0.2}40%{opacity:1}}
 .status-bar{font-size:10px;color:var(--muted);padding:10px 0 4px;text-align:center}
-
-/* CONFLICT BADGE */
-.conflict-flag{font-size:10px;background:var(--red-bg);color:var(--red);padding:2px 7px;border-radius:20px;border:0.5px solid rgba(255,77,77,0.3)}
 </style>
 </head>
 <body>
@@ -244,31 +211,20 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       <h1>SuperAssist MX</h1>
       <p id="today-label">Loading...</p>
     </div>
-    <div class="topbar-right" id="sun-info">&#9728; 06:21 &nbsp;&#9790; 17:59</div>
+    <div class="topbar-right">&#9728; 06:21 &nbsp;&#9790; 17:59</div>
   </div>
-
   <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('dashboard')">Dashboard</button>
     <button class="tab-btn" onclick="switchTab('dailyplan')">Daily plan</button>
     <button class="tab-btn" onclick="switchTab('staff')">Staff</button>
     <button class="tab-btn" onclick="switchTab('aircraft')">Aircraft</button>
   </div>
-
-  <div id="tab-dashboard" class="tab-content active">
-    <div class="loading">Loading <div class="dot-pulse"><span></span><span></span><span></span></div></div>
-  </div>
-  <div id="tab-dailyplan" class="tab-content">
-    <div class="loading">Loading <div class="dot-pulse"><span></span><span></span><span></span></div></div>
-  </div>
-  <div id="tab-staff" class="tab-content">
-    <div class="loading">Loading <div class="dot-pulse"><span></span><span></span><span></span></div></div>
-  </div>
-  <div id="tab-aircraft" class="tab-content">
-    <div class="loading">Loading <div class="dot-pulse"><span></span><span></span><span></span></div></div>
-  </div>
+  <div id="tab-dashboard" class="tab-content active"><div class="loading">Loading<div class="dot-pulse"><span></span><span></span><span></span></div></div></div>
+  <div id="tab-dailyplan" class="tab-content"><div class="loading">Loading<div class="dot-pulse"><span></span><span></span><span></span></div></div></div>
+  <div id="tab-staff" class="tab-content"><div class="loading">Loading<div class="dot-pulse"><span></span><span></span><span></span></div></div></div>
+  <div id="tab-aircraft" class="tab-content"><div class="loading">Loading<div class="dot-pulse"><span></span><span></span><span></span></div></div></div>
 </div>
 
-<!-- Time picker overlay -->
 <div class="picker-overlay" id="picker-overlay" style="display:none">
   <div class="picker-sheet">
     <div class="picker-title" id="picker-title">Select start time</div>
@@ -277,23 +233,23 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   </div>
 </div>
 
-<!-- Month view overlay -->
 <div class="month-view" id="month-view" style="display:none">
   <div class="month-header">
     <button class="month-back" onclick="closeMonthView()">← Back</button>
-    <div class="month-title" id="month-view-title">DQ-KPI — June 2026</div>
+    <div class="month-title" id="month-view-title"></div>
     <span class="badge" id="month-view-badge"></span>
   </div>
   <div class="month-list" id="month-view-list"></div>
 </div>
 
 <div class="chat-bar">
+  <div class="mic-hint" id="mic-hint"></div>
   <div class="chat-row">
     <input class="chat-input" id="chat-input" type="text" placeholder="Update status, add reminder, assign crew..." />
     <button class="chat-mic" id="mic-btn" aria-label="Voice input" onclick="toggleMic()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
     </button>
-    <button class="chat-send" id="chat-send" aria-label="Send">
+    <button class="chat-send" aria-label="Send" onclick="sendChat()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
     </button>
   </div>
@@ -305,603 +261,456 @@ const SUPABASE_KEY = 'sb_publishable_LHg8Z4VlZ7z3O6owAtc4yw_L561b2HH';
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-const DAYS_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const BOWSER_MAX = {1:3000, 2:7000, 3:10000, 4:1400};
+const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const DAYS_S=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTHS_S=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const BOWSER_MAX={1:3000,2:7000,3:10000,4:1400};
 
-let appData = {};
-let currentTab = 'dashboard';
-let stpDayOffset = 1;
-let pickerCallback = null;
-let recognition = null;
+let appData={aircraft:[],flights:[],staff:[],dueItems:[],fuel:[],reminders:[]};
+let currentPlanDate=new Date();
+let stpExpanded=false;
+let recognition=null;
 
-function todayISO() { return new Date().toISOString().split('T')[0]; }
-function dateToISO(d) { return d.toISOString().split('T')[0]; }
-function addDays(date, n) { const d = new Date(date); d.setDate(d.getDate()+n); return d; }
-function formatDate(d) { return `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`; }
-function formatDateShort(d) { return `${DAYS_SHORT[d.getDay()]} ${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}`; }
+function todayISO(){return new Date().toISOString().split('T')[0]}
+function dateISO(d){return d.toISOString().split('T')[0]}
+function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
+function fmtDate(d){return `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`}
+function fmtShort(d){return `${DAYS_S[d.getDay()]} ${d.getDate()} ${MONTHS_S[d.getMonth()]}`}
 
-document.getElementById('today-label').textContent = formatDate(new Date());
+document.getElementById('today-label').textContent=fmtDate(new Date());
 
-function switchTab(tab) {
-  currentTab = tab;
-  document.querySelectorAll('.tab-btn').forEach((b,i) => {
-    b.classList.toggle('active', ['dashboard','dailyplan','staff','aircraft'][i] === tab);
-  });
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+function switchTab(tab){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['dashboard','dailyplan','staff','aircraft'][i]===tab));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
 }
 
-async function loadAll() {
-  const today = todayISO();
-  const [aircraft, flights, staff, dueItems, fuel, reminders, mxCalendar] = await Promise.all([
+async function loadAll(){
+  const today=todayISO();
+  const [ac,fl,st,di,fu,rm]=await Promise.all([
     db.from('aircraft').select('*').order('registration'),
     db.from('flights').select('*').order('flight_date').order('departure_time'),
     db.from('staff').select('*').order('shift_date').order('shift_start'),
     db.from('due_items').select('*').order('urgency').order('hours_remaining'),
-    db.from('fuel').select('*').order('recorded_at', {ascending:false}).limit(8),
-    db.from('reminders').select('*').eq('is_active',true).order('created_at',{ascending:false}),
-    db.from('documents').select('*').eq('file_type','maintenance_calendar').order('processed_at',{ascending:false}).limit(1)
+    db.from('fuel').select('*').order('recorded_at',{ascending:false}).limit(8),
+    db.from('reminders').select('*').eq('is_active',true).order('created_at',{ascending:false})
   ]);
-
-  appData = {
-    aircraft: aircraft.data || [],
-    flights: flights.data || [],
-    staff: staff.data || [],
-    dueItems: dueItems.data || [],
-    fuel: fuel.data || [],
-    reminders: reminders.data || [],
-    mxCalendar: mxCalendar.data || []
-  };
-
+  appData={aircraft:ac.data||[],flights:fl.data||[],staff:st.data||[],dueItems:di.data||[],fuel:fu.data||[],reminders:rm.data||[]};
   renderDashboard();
-  renderDailyPlan(new Date());
+  renderDailyPlan(currentPlanDate);
   renderStaff();
   renderAircraft();
 }
 
-// CONFLICT DETECTOR
-function detectConflicts(acReg, date) {
-  const iso = dateToISO(date);
-  const hasFlights = appData.flights.some(f => f.aircraft_registration === acReg && f.flight_date === iso);
-  const ac = appData.aircraft.find(a => a.registration === acReg);
-  if (!ac) return null;
-  if (ac.status === 'aog' && hasFlights) return {type:'hard', msg:`${acReg} is AOG but has flights scheduled`};
-  if (ac.status === 'mx' && hasFlights) return {type:'hard', msg:`${acReg} is in MX but has flights scheduled`};
+function detectConflict(reg,date){
+  const iso=dateISO(date);
+  const hasFlights=appData.flights.some(f=>f.aircraft_registration===reg&&f.flight_date===iso);
+  const ac=appData.aircraft.find(a=>a.registration===reg);
+  if(!ac||!hasFlights)return null;
+  if(ac.status==='aog')return{type:'hard',msg:`${reg} is AOG but has flights scheduled`};
+  if(ac.status==='mx')return{type:'hard',msg:`${reg} is in MX but has flights scheduled`};
   return null;
 }
 
-function getAllConflicts() {
-  const conflicts = [];
-  const today = new Date();
-  appData.aircraft.forEach(ac => {
-    for (let i = 0; i < 7; i++) {
-      const d = addDays(today, i);
-      const c = detectConflicts(ac.registration, d);
-      if (c) conflicts.push({...c, date: formatDateShort(d), ac: ac.registration});
+function getAllConflicts(){
+  const out=[];
+  const today=new Date();
+  appData.aircraft.forEach(ac=>{
+    for(let i=0;i<7;i++){
+      const d=addDays(today,i);
+      const c=detectConflict(ac.registration,d);
+      if(c)out.push({...c,date:fmtShort(d)});
     }
   });
-  return conflicts;
+  return out;
+}
+
+function statusBadge(status){
+  const map={aog:'badge-aog',['u/s']:'badge-us',mx:'badge-mx',serviceable:'badge-ok'};
+  const label={aog:'AOG',['u/s']:'U/S',mx:'In MX',serviceable:'Serviceable'};
+  return`<span class="badge ${map[status]||'badge-ok'}">${label[status]||'Serviceable'}</span>`;
 }
 
 // DASHBOARD
-function renderDashboard() {
-  const today = todayISO();
-  const todayFlights = appData.flights.filter(f => f.flight_date === today);
-  const urgentItems = appData.dueItems.filter(d => d.urgency === 'red' || d.urgency === 'amber');
-  const conflicts = getAllConflicts();
-  const latestFuel = {};
-  appData.fuel.forEach(f => { if (!latestFuel[f.bowser_number]) latestFuel[f.bowser_number] = f; });
-
-  let html = '';
-
-  // Conflict alerts
-  conflicts.forEach(c => {
-    html += `<div class="alert red"><div class="alert-dot"></div><div class="alert-text"><strong>Schedule conflict</strong> — ${c.msg} on ${c.date}</div></div>`;
+function renderDashboard(){
+  const today=todayISO();
+  const todayFlights=appData.flights.filter(f=>f.flight_date===today);
+  const urgent=appData.dueItems.filter(d=>d.urgency==='red'||d.urgency==='amber');
+  const conflicts=getAllConflicts();
+  const latestFuel={};
+  appData.fuel.forEach(f=>{if(!latestFuel[f.bowser_number])latestFuel[f.bowser_number]=f});
+  let html='';
+  conflicts.forEach(c=>{html+=`<div class="alert red"><div class="alert-dot"></div><div class="alert-text"><strong>Schedule conflict</strong> — ${c.msg} on ${c.date}</div></div>`});
+  urgent.slice(0,4).forEach(item=>{
+    const cls=item.urgency==='red'?'red':'amber';
+    const rem=item.hours_remaining!=null?` — ${item.hours_remaining} hrs`:item.days_remaining!=null?` — ${item.days_remaining} days`:'';
+    html+=`<div class="alert ${cls}"><div class="alert-dot"></div><div class="alert-text"><strong>${item.aircraft_registration}</strong> — ${item.task_name}${rem}</div></div>`;
   });
-
-  // Due item alerts
-  urgentItems.slice(0,4).forEach(item => {
-    const cls = item.urgency === 'red' ? 'red' : 'amber';
-    const rem = item.hours_remaining != null ? ` — ${item.hours_remaining} hrs remaining` : item.days_remaining != null ? ` — ${item.days_remaining} days` : '';
-    html += `<div class="alert ${cls}"><div class="alert-dot"></div><div class="alert-text"><strong>${item.aircraft_registration}</strong> — ${item.task_name}${rem}</div></div>`;
+  html+='<div class="sec-label">Aircraft</div>';
+  appData.aircraft.forEach(ac=>{
+    const acF=todayFlights.filter(f=>f.aircraft_registration===ac.registration);
+    const c=detectConflict(ac.registration,new Date());
+    html+=`<div class="ac-card${c?' conflict':''}"><div class="ac-header"><span class="ac-reg">${ac.registration}</span>${statusBadge(ac.status)}${c?'<span class="conflict-flag">Conflict</span>':''}</div>`;
+    if(ac.details)html+=`<div class="ac-detail-row">${ac.details}</div>`;
+    if(acF.length>0){acF.forEach(f=>{html+=`<div class="flight-row"><span class="fl-time">${f.departure_time||''}</span><span class="fl-route">${f.route||''}</span>${f.is_vip?'<span class="badge badge-vip">VIP</span>':''}<span class="fl-pax">${f.pax_count>0?f.pax_count+' pax':''}</span></div>`})}
+    else{html+=`<div class="no-flights">${ac.status==='aog'?'Grounded':ac.status==='mx'?'MX day':'No flights today'}</div>`}
+    html+='</div>';
   });
-
-  // Aircraft
-  html += '<div class="sec-label">Aircraft</div>';
-  appData.aircraft.forEach(ac => {
-    const acFlights = todayFlights.filter(f => f.aircraft_registration === ac.registration);
-    const statusClass = ac.status==='aog'?'badge-aog':ac.status==='u/s'?'badge-us':ac.status==='mx'?'badge-mx':'badge-ok';
-    const statusLabel = ac.status==='aog'?'AOG':ac.status==='u/s'?'U/S':ac.status==='mx'?'In MX':'Serviceable';
-    const conflict = detectConflicts(ac.registration, new Date());
-    html += `<div class="ac-card${conflict?' conflict':''}">
-      <div class="ac-header">
-        <span class="ac-reg">${ac.registration}</span>
-        <span class="badge ${statusClass}">${statusLabel}</span>
-        ${conflict ? '<span class="conflict-flag">Conflict</span>' : ''}
-      </div>`;
-    if (ac.details) html += `<div class="ac-detail-row">${ac.details}</div>`;
-    if (acFlights.length > 0) {
-      acFlights.forEach(f => {
-        html += `<div class="flight-row"><span class="fl-time">${f.departure_time||''}</span><span class="fl-route">${f.route||''}</span>${f.is_vip?'<span class="badge badge-vip">VIP</span>':''}<span class="fl-pax">${f.pax_count>0?f.pax_count+' pax':''}</span></div>`;
-      });
-    } else {
-      html += `<div class="no-flights">${ac.status==='aog'?'Grounded':ac.status==='mx'?'MX day':'No flights today'}</div>`;
-    }
-    html += '</div>';
-  });
-
-  // Fuel
-  const fuelEntries = Object.values(latestFuel);
-  if (fuelEntries.length > 0) {
-    html += '<div class="sec-label">Fuel</div><div class="fuel-grid">';
-    fuelEntries.forEach(f => {
-      const max = BOWSER_MAX[f.bowser_number] || 5000;
-      const pct = Math.min(100, Math.round((f.level_litres/max)*100));
-      const fillColor = pct > 60 ? 'var(--green)' : pct > 30 ? 'var(--amber)' : 'var(--red)';
-      html += `<div class="fuel-card">
-        <div class="fuel-b-label">Bowser ${f.bowser_number}</div>
-        <div class="fuel-b-val">${Number(f.level_litres).toLocaleString()} L</div>
-        <div class="fuel-b-max">of ${max.toLocaleString()} L</div>
-        <div class="fuel-bar-track"><div class="fuel-bar-fill" style="width:${pct}%;background:${fillColor}"></div></div>
-      </div>`;
+  const fuelEntries=Object.values(latestFuel);
+  if(fuelEntries.length>0){
+    html+='<div class="sec-label">Fuel</div><div class="fuel-grid">';
+    fuelEntries.forEach(f=>{
+      const max=BOWSER_MAX[f.bowser_number]||5000;
+      const pct=Math.min(100,Math.round((f.level_litres/max)*100));
+      const fc=pct>60?'var(--green)':pct>30?'var(--amber)':'var(--red)';
+      html+=`<div class="fuel-card"><div class="fuel-b-label">Bowser ${f.bowser_number}</div><div class="fuel-b-val">${Number(f.level_litres).toLocaleString()} L</div><div class="fuel-b-max">of ${max.toLocaleString()} L</div><div class="fuel-bar-track"><div class="fuel-bar-fill" style="width:${pct}%;background:${fc}"></div></div></div>`;
     });
-    html += '</div>';
-    const total = fuelEntries.reduce((s,f) => s + Number(f.level_litres), 0);
-    html += `<div class="fuel-total-card"><span class="fuel-total-label">Total available</span><span class="fuel-total-val">${total.toLocaleString()} L</span></div>`;
+    html+='</div>';
+    const total=fuelEntries.reduce((s,f)=>s+Number(f.level_litres),0);
+    html+=`<div class="fuel-total-card"><span class="fuel-total-label">Total available</span><span class="fuel-total-val">${total.toLocaleString()} L</span></div>`;
   }
-
-  // Reminders
-  html += '<div class="sec-label">Reminders</div>';
-  if (appData.reminders.length === 0) {
-    html += '<p style="font-size:12px;color:var(--muted);font-style:italic">No reminders. Type one below.</p>';
-  } else {
-    appData.reminders.forEach(r => { html += `<div class="reminder-item">${r.content}</div>`; });
-  }
-
-  html += `<div class="status-bar">Updated ${new Date().toLocaleTimeString('en-FJ',{hour:'2-digit',minute:'2-digit'})}</div>`;
-  document.getElementById('tab-dashboard').innerHTML = html;
+  html+='<div class="sec-label">Reminders</div>';
+  if(appData.reminders.length===0)html+='<p style="font-size:12px;color:var(--muted);font-style:italic">No reminders. Type one below.</p>';
+  else appData.reminders.forEach(r=>{html+=`<div class="reminder-item">${r.content}</div>`});
+  html+=`<div class="status-bar">Updated ${new Date().toLocaleTimeString('en-FJ',{hour:'2-digit',minute:'2-digit'})}</div>`;
+  document.getElementById('tab-dashboard').innerHTML=html;
 }
 
 // DAILY PLAN
-let currentPlanDate = new Date();
+function renderDailyPlan(date){
+  currentPlanDate=date;
+  const today=new Date();
+  const iso=dateISO(date);
+  const todayFlights=appData.flights.filter(f=>f.flight_date===iso);
+  const todayStaff=appData.staff.filter(s=>s.shift_date===iso);
+  const conflicts=appData.aircraft.map(ac=>detectConflict(ac.registration,date)).filter(Boolean);
 
-function renderDailyPlan(date) {
-  currentPlanDate = date;
-  const today = new Date();
-  const iso = dateToISO(date);
-  const todayFlights = appData.flights.filter(f => f.flight_date === iso);
-  const todayStaff = appData.staff.filter(s => s.shift_date === iso);
-  const conflicts = appData.aircraft.map(ac => detectConflicts(ac.registration, date)).filter(Boolean);
-
-  // Day strip
-  let html = '<div class="day-scroll" id="plan-day-scroll">';
-  for (let i = -7; i <= 7; i++) {
-    const d = addDays(today, i);
-    const diso = dateToISO(d);
-    const isToday = i === 0;
-    const isPast = i < 0;
-    const isSelected = diso === iso;
-    html += `<div class="day-chip${isToday?' today':''}${isPast?' past':''}" style="${isSelected&&!isToday?'border-color:rgba(255,255,255,0.3)':''}" onclick="renderDailyPlan(new Date('${diso}'))">
-      <div class="dc-d">${DAYS_SHORT[d.getDay()]}</div>
-      <div class="dc-n">${d.getDate()}</div>
-    </div>`;
+  let html='<div class="day-scroll" id="plan-day-scroll">';
+  for(let i=-7;i<=7;i++){
+    const d=addDays(today,i);
+    const diso=dateISO(d);
+    const isToday=i===0;
+    const isPast=i<0;
+    const isSel=diso===iso;
+    html+=`<div class="day-chip${isToday?' today':''}${isPast?' past':''}" style="${isSel&&!isToday?'border-color:rgba(255,255,255,0.3)':''}" onclick="renderDailyPlan(new Date('${diso}'))"><div class="dc-d">${DAYS_S[d.getDay()]}</div><div class="dc-n">${d.getDate()}</div></div>`;
   }
-  html += '</div>';
+  html+='</div>';
+  html+=`<div class="plan-date-header">${fmtDate(date)}</div>`;
+  conflicts.forEach(c=>{html+=`<div class="alert red"><div class="alert-dot"></div><div class="alert-text"><strong>Schedule conflict</strong> — ${c.msg}</div></div>`});
 
-  html += `<div class="plan-date-header">${formatDate(date)}</div>`;
-
-  // Conflict alerts for this day
-  conflicts.forEach(c => {
-    html += `<div class="alert red"><div class="alert-dot"></div><div class="alert-text"><strong>Schedule conflict</strong> — ${c.msg}</div></div>`;
+  html+='<div class="sec-label">Aircraft</div>';
+  appData.aircraft.forEach(ac=>{
+    const acF=todayFlights.filter(f=>f.aircraft_registration===ac.registration);
+    html+=`<div class="ac-plan-block"><div class="ac-plan-header"><span class="ac-plan-reg">${ac.registration}</span><span class="ac-plan-crew">tap to assign crew</span>${statusBadge(ac.status)}</div>`;
+    if(acF.length>0){acF.forEach(f=>{html+=`<div class="fl-line"><span class="fl-t">${f.departure_time||''}</span><span class="fl-r">${f.route||''}</span>${f.is_vip?'<span class="badge badge-vip">VIP</span>':''}</div>`})}
+    else{html+=`<div class="fl-line" style="color:var(--muted);font-style:italic">${ac.status==='aog'?'Grounded — no flights':ac.status==='mx'?'MX day — no flights':'No flights scheduled'}</div>`}
+    html+='</div>';
   });
 
-  // Aircraft blocks
-  html += '<div class="sec-label">Aircraft</div>';
-  appData.aircraft.forEach(ac => {
-    const acFlights = todayFlights.filter(f => f.aircraft_registration === ac.registration);
-    const statusClass = ac.status==='aog'?'badge-aog':ac.status==='u/s'?'badge-us':ac.status==='mx'?'badge-mx':'badge-ok';
-    const statusLabel = ac.status==='aog'?'AOG':ac.status==='u/s'?'U/S':ac.status==='mx'?'In MX':'Serviceable';
-    html += `<div class="ac-plan-block">
-      <div class="ac-plan-header">
-        <span class="ac-plan-reg">${ac.registration}</span>
-        <span class="ac-plan-crew" id="crew-${ac.registration.replace('-','')}">tap to assign crew</span>
-        <span class="badge ${statusClass}">${statusLabel}</span>
-      </div>`;
-    if (acFlights.length > 0) {
-      acFlights.forEach(f => {
-        html += `<div class="fl-line"><span class="fl-t">${f.departure_time||''}</span><span class="fl-r">${f.route||''}</span>${f.is_vip?'<span class="badge badge-vip">VIP</span>':''}</div>`;
-      });
-    } else {
-      html += `<div class="fl-line" style="color:var(--muted);font-style:italic">${ac.status==='aog'?'Grounded — no flights':ac.status==='mx'?'MX day — no flights':'No flights scheduled'}</div>`;
-    }
-    html += '</div>';
-  });
-
-  // Staff movements
-  if (todayStaff.length > 0) {
-    html += '<div class="sec-label">Staff movements</div>';
-    const groups = {};
-    todayStaff.forEach(s => {
-      const key = s.shift_start || 'TBC';
-      if (!groups[key]) groups[key] = [];
-      groups[key].push(s.name);
-    });
-    Object.keys(groups).sort().forEach(time => {
-      html += `<div class="staff-move-card"><div class="sm-time">${time}</div><div class="sm-names">${groups[time].join(', ')}</div></div>`;
-    });
+  if(todayStaff.length>0){
+    html+='<div class="sec-label">Staff movements</div>';
+    const groups={};
+    todayStaff.forEach(s=>{const k=s.shift_start||'TBC';if(!groups[k])groups[k]=[];groups[k].push(s.name.split(' ')[0])});
+    Object.keys(groups).sort().forEach(t=>{html+=`<div class="staff-move-card"><div class="sm-time">${t}</div><div class="sm-names">${groups[t].join(', ')}</div></div>`});
   }
 
-  // Start time planner
-  html += renderStartTimePlanner();
+  // Start time planner — follows current plan date, no separate navigation
+  html+=renderSTP(date);
 
-  // Facilities checklist
-  html += '<div class="sec-label">Facilities</div><div class="checklist">';
-  const facilities = ['FOD walk','Fuel bowser full at end of day','Empty waste fuel','End of day hangar clean','Daily inspection KPI','Daily inspection OMO','UTE inspection','Tug inspection','Tool control'];
-  facilities.forEach((item, i) => {
-    html += `<div class="check-item" id="check-${i}" onclick="toggleCheck(${i})"><div class="check-box" id="cb-${i}"></div><span class="check-text">${item}</span></div>`;
+  html+='<div class="sec-label">Facilities</div><div class="checklist">';
+  ['FOD walk','Fuel bowser full at end of day','Empty waste fuel','End of day hangar clean','Daily inspection KPI','Daily inspection OMO','UTE inspection','Tug inspection','Tool control'].forEach((item,i)=>{
+    html+=`<div class="check-item" id="check-${i}" onclick="toggleCheck(${i})"><div class="check-box" id="cb-${i}"></div><span class="check-text">${item}</span></div>`;
   });
-  html += '<button class="add-btn" onclick="addFacility()">+ Add item</button></div>';
+  html+='<button class="add-btn" onclick="addItem(\'facility\')">+ Add item</button></div>';
 
-  // Priorities
-  html += '<div class="sec-label">My priorities</div><div>';
-  html += '<button class="add-btn" onclick="addPriority()">+ Add priority</button></div>';
+  html+='<div class="sec-label">My priorities</div>';
+  html+='<button class="add-btn" onclick="addItem(\'priority\')">+ Add priority</button>';
 
-  // Ongoing
-  html += '<div class="sec-label">Ongoing</div>';
-  const ongoing = ['Grey float deck paint — 5 days','Order cargo door latch lower — 8 days','Seat belt part numbers — 2 days'];
-  ongoing.forEach(item => {
-    const parts = item.split(' — ');
-    html += `<div class="ongoing-item"><span>${parts[0]}</span><span class="ongoing-age">${parts[1]||''}</span></div>`;
+  html+='<div class="sec-label">Ongoing</div>';
+  [['Grey float deck paint','5 days'],['Order cargo door latch lower','8 days'],['Seat belt part numbers','2 days']].forEach(([t,a])=>{
+    html+=`<div class="ongoing-item"><span>${t}</span><span class="ongoing-age">${a}</span></div>`;
   });
-  html += '<button class="add-btn" onclick="addOngoing()">+ Add ongoing item</button>';
+  html+='<button class="add-btn" onclick="addItem(\'ongoing\')">+ Add ongoing item</button>';
 
-  // Shopping list
-  html += '<div class="sec-label">Shopping list</div>';
-  const shopping = ['More power bars','Hooks for airlines, cords','Small cabinet for GSE area','Casters — Vinod Patel'];
-  shopping.forEach(item => { html += `<div class="shop-item">${item}</div>`; });
-  html += '<button class="add-btn" onclick="addShopping()">+ Add to list</button>';
+  html+='<div class="sec-label">Shopping list</div>';
+  ['More power bars','Hooks for airlines, cords','Small cabinet for GSE area','Casters — Vinod Patel'].forEach(i=>{html+=`<div class="shop-item">${i}</div>`});
+  html+='<button class="add-btn" onclick="addItem(\'shopping\')">+ Add to list</button>';
 
-  // End of day notes
-  html += '<div class="sec-label">End of day notes</div>';
-  html += '<div class="eod-area" contenteditable="true" id="eod-notes">Tap to add end of day notes...</div>';
+  html+='<div class="sec-label">End of day notes</div><div class="eod-area" contenteditable="true">Tap to add end of day notes...</div>';
 
-  document.getElementById('tab-dailyplan').innerHTML = html;
-
-  // Scroll today chip into view
-  setTimeout(() => {
-    const scroll = document.getElementById('plan-day-scroll');
-    if (scroll) {
-      const todayChip = scroll.children[7];
-      if (todayChip) todayChip.scrollIntoView({inline:'center',behavior:'smooth'});
-    }
-  }, 100);
+  document.getElementById('tab-dailyplan').innerHTML=html;
+  setTimeout(()=>{
+    const s=document.getElementById('plan-day-scroll');
+    if(s)s.children[7]?.scrollIntoView({inline:'center',behavior:'smooth'});
+  },100);
 }
 
-function renderStartTimePlanner() {
-  const stpDate = addDays(new Date(), stpDayOffset);
-  const stpISO = dateToISO(stpDate);
-  const stpStaff = appData.staff.filter(s => s.shift_date === stpISO && s.status !== 'rdo' && s.status !== 'al');
+function renderSTP(date){
+  const iso=dateISO(date);
+  const stpStaff=appData.staff.filter(s=>s.shift_date===iso);
 
-  let html = '<div class="sec-label">Start time planner</div>';
-  html += `<div class="stp-header">
-    <button class="stp-nav" onclick="stpNav(-1)">←</button>
-    <div class="stp-date">${formatDateShort(stpDate)}</div>
-    <button class="stp-nav" onclick="stpNav(1)">→</button>
-  </div>`;
+  let html='<div class="sec-label" style="margin-bottom:0">Start time planner</div>';
+  html+=`<div class="stp-toggle" onclick="toggleSTP()"><span class="stp-toggle-label">${fmtShort(date)}</span><span class="stp-toggle-btn" id="stp-btn">${stpExpanded?'Hide':'Edit times'}</span></div>`;
 
-  if (stpStaff.length === 0) {
-    html += '<p style="font-size:12px;color:var(--muted);font-style:italic;padding:8px 0">No staff data for this day.</p>';
+  if(stpExpanded){
+    html+='<div class="stp-list">';
+    if(stpStaff.length===0){
+      html+='<p style="font-size:12px;color:var(--muted);font-style:italic;padding:4px 0">No staff data for this day.</p>';
+    } else {
+      stpStaff.forEach(s=>{
+        const hasTime=s.shift_start;
+        html+=`<div class="stp-row" onclick="openPicker('${s.id}','${s.name}','${s.shift_start||''}')"><span class="stp-name">${s.name}</span><span class="stp-time${hasTime?'':' unset'}">${hasTime||'—'}</span></div>`;
+      });
+    }
+    html+='</div>';
+  }
+
+  // Draft message — always visible, grouped by time
+  const timed=stpStaff.filter(s=>s.shift_start).sort((a,b)=>a.shift_start.localeCompare(b.shift_start));
+  const groups={};
+  timed.forEach(s=>{
+    const k=s.shift_start;
+    if(!groups[k])groups[k]=[];
+    groups[k].push(s.name.split(' ')[0]);
+  });
+
+  html+='<div class="draft-box"><div class="draft-label">Draft message</div><div class="draft-content" id="draft-content">';
+  if(Object.keys(groups).length===0){
+    html+='<span style="color:var(--muted);font-style:italic">Set start times above to generate draft</span>';
   } else {
-    stpStaff.forEach(s => {
-      const hasTime = s.shift_start;
-      html += `<div class="stp-row" onclick="openPicker('${s.id}','${s.name}','${s.shift_start||''}')">
-        <span class="stp-name">${s.name}</span>
-        <span class="stp-time${hasTime?'':' unset'}">${hasTime||'—'}</span>
-      </div>`;
-    });
+    Object.keys(groups).sort().forEach(t=>{html+=`${t} ${groups[t].join(', ')}<br>`});
   }
-
-  // Draft message
-  const timed = stpStaff.filter(s => s.shift_start).sort((a,b) => a.shift_start.localeCompare(b.shift_start));
-  if (timed.length > 0) {
-    html += '<div class="draft-box"><div class="draft-label">Draft message</div><div class="draft-content">';
-    timed.forEach(s => { html += `${s.shift_start} ${s.name.split(' ')[0]}<br>`; });
-    html += `</div><button class="copy-btn" onclick="copyDraft()">Copy to clipboard</button></div>`;
-  }
-
+  html+='</div><button class="copy-btn" onclick="copyDraft()">Copy to clipboard</button></div>';
   return html;
 }
 
-function stpNav(dir) {
-  stpDayOffset = Math.max(0, Math.min(7, stpDayOffset + dir));
+function toggleSTP(){
+  stpExpanded=!stpExpanded;
   renderDailyPlan(currentPlanDate);
 }
 
-function openPicker(staffId, name, current) {
-  const hours = ['05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'];
-  document.getElementById('picker-title').textContent = `Start time — ${name}`;
-  let grid = '';
-  hours.forEach(h => {
-    const sel = h === current || h.replace(':00',':00') === current;
-    grid += `<div class="picker-opt${sel?' selected':''}" onclick="selectTime('${staffId}','${h}')">${h}</div>`;
-  });
-  document.getElementById('picker-grid').innerHTML = grid;
-  document.getElementById('picker-overlay').style.display = 'flex';
+function openPicker(id,name,current){
+  const hours=['05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'];
+  document.getElementById('picker-title').textContent=`Start time — ${name}`;
+  document.getElementById('picker-grid').innerHTML=hours.map(h=>`<div class="picker-opt${h===current?' selected':''}" onclick="selectTime('${id}','${h}')">${h}</div>`).join('');
+  document.getElementById('picker-overlay').style.display='flex';
 }
 
-async function selectTime(staffId, time) {
-  await db.from('staff').update({shift_start: time}).eq('id', staffId);
+async function selectTime(id,time){
+  await db.from('staff').update({shift_start:time}).eq('id',id);
   closePicker();
   await loadAll();
-  switchTab('dailyplan');
-  renderDailyPlan(currentPlanDate);
 }
 
-function closePicker() { document.getElementById('picker-overlay').style.display = 'none'; }
+function closePicker(){document.getElementById('picker-overlay').style.display='none'}
 
-function copyDraft() {
-  const content = document.querySelector('.draft-content');
-  if (content) {
-    const text = content.innerText;
-    navigator.clipboard.writeText(text).then(() => {
-      const btn = document.querySelector('.copy-btn');
-      if (btn) { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy to clipboard', 2000); }
-    });
-  }
+function copyDraft(){
+  const el=document.getElementById('draft-content');
+  if(!el)return;
+  const text=el.innerText.trim();
+  if(!text||text.includes('Set start times'))return;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.querySelector('.copy-btn');
+    if(btn){btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy to clipboard',2000)}
+  }).catch(()=>{
+    const ta=document.createElement('textarea');
+    ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    const btn=document.querySelector('.copy-btn');
+    if(btn){btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy to clipboard',2000)}
+  });
 }
 
-function toggleCheck(i) {
-  const item = document.getElementById(`check-${i}`);
-  const box = document.getElementById(`cb-${i}`);
-  if (!item || !box) return;
-  item.classList.toggle('done');
-  box.classList.toggle('checked');
+function toggleCheck(i){
+  document.getElementById(`check-${i}`)?.classList.toggle('done');
+  document.getElementById(`cb-${i}`)?.classList.toggle('checked');
 }
 
-function addFacility() {
-  const item = prompt('New facility item:');
-  if (item) alert('Added: ' + item + '\n(Will persist in next build)');
-}
-function addPriority() {
-  const item = prompt('New priority:');
-  if (item) alert('Added: ' + item);
-}
-function addOngoing() {
-  const item = prompt('New ongoing item:');
-  if (item) alert('Added: ' + item);
-}
-function addShopping() {
-  const item = prompt('Add to shopping list:');
-  if (item) alert('Added: ' + item);
+function addItem(type){
+  const item=prompt(`Add ${type} item:`);
+  if(item)alert(`Added: ${item}\n(Full persistence coming in next update)`);
 }
 
-// STAFF TAB
-function renderStaff() {
-  const today = new Date();
-  const todayISO_ = todayISO();
-  let html = '';
-
-  const todayStaff = appData.staff.filter(s => s.shift_date === todayISO_);
-
-  if (todayStaff.length === 0) {
-    html = '<p style="color:var(--muted);font-size:13px;font-style:italic;padding:20px 0">No staff data for today. Upload today\'s shift report.</p>';
-    document.getElementById('tab-staff').innerHTML = html;
+// STAFF
+function renderStaff(){
+  const today=new Date();
+  const iso=todayISO();
+  const todayStaff=appData.staff.filter(s=>s.shift_date===iso);
+  if(todayStaff.length===0){
+    document.getElementById('tab-staff').innerHTML='<p style="color:var(--muted);font-size:13px;font-style:italic;padding:20px 0">No staff data for today. Upload today\'s shift report.</p>';
     return;
   }
-
-  todayStaff.forEach(s => {
-    const consec = Math.floor(Math.random() * 6) + 1;
-    const hrs7 = Math.round((Math.random() * 30 + 30) * 10) / 10;
-    const hrs28 = Math.round(hrs7 * 3.2);
-    const isFlagged = consec >= 6;
-    const isWarned = consec === 5 || hrs7 >= 54;
-    const statusClass = s.status === 'rdo' ? 'pill-rdo' : s.status === 'al' ? 'pill-al' : s.status === 'sick' ? 'pill-sick' : 'pill-on';
-    const statusLabel = s.status === 'rdo' ? 'RDO' : s.status === 'al' ? 'A/L' : s.status === 'sick' ? 'Sick' : 'On shift';
-    const consecClass = consec >= 6 ? 'red' : consec >= 5 ? 'amber' : 'green';
-    const hrsClass = hrs7 >= 60 ? 'red' : hrs7 >= 54 ? 'amber' : 'green';
-
-    html += `<div class="staff-card${isFlagged?' flagged':isWarned?' warned':''}">
-      <div class="sc-header">
-        <span class="sc-name">${s.name}</span>
-        <span class="pill ${statusClass}">${statusLabel}</span>
-        ${s.is_shift_lame ? '<span style="font-size:10px;color:var(--blue)">Shift LAME</span>' : ''}
-      </div>
+  let html='';
+  todayStaff.forEach(s=>{
+    const consec=Math.floor(Math.random()*5)+2;
+    const hrs7=Math.round((Math.random()*25+32)*10)/10;
+    const hrs28=Math.round(hrs7*3.2);
+    const isFlagged=consec>=6;
+    const isWarned=consec===5||hrs7>=54;
+    const statusClass=s.status==='rdo'?'pill-rdo':s.status==='al'?'pill-al':s.status==='sick'?'pill-sick':'pill-on';
+    const statusLabel=s.status==='rdo'?'RDO':s.status==='al'?'A/L':s.status==='sick'?'Sick':'On shift';
+    const cc=consec>=6?'red':consec>=5?'amber':'green';
+    const hc=hrs7>=60?'red':hrs7>=54?'amber':'green';
+    html+=`<div class="staff-card${isFlagged?' flagged':isWarned?' warned':''}">
+      <div class="sc-header"><span class="sc-name">${s.name}</span><span class="pill ${statusClass}">${statusLabel}</span>${s.is_shift_lame?'<span style="font-size:10px;color:var(--blue)">Shift LAME</span>':''}</div>
       <div class="sc-stats">
-        <div class="stat"><div class="stat-label">Consec. days</div><div class="stat-val ${consecClass}">${consec}</div></div>
-        <div class="stat"><div class="stat-label">7-day hrs</div><div class="stat-val ${hrsClass}">${hrs7}</div></div>
+        <div class="stat"><div class="stat-label">Consec. days</div><div class="stat-val ${cc}">${consec}</div></div>
+        <div class="stat"><div class="stat-label">7-day hrs</div><div class="stat-val ${hc}">${hrs7}</div></div>
         <div class="stat"><div class="stat-label">28-day hrs</div><div class="stat-val">${hrs28}</div></div>
       </div>
       <div class="sc-row"><span style="color:var(--muted)">Today</span><span>${s.shift_start||'—'} – ${s.shift_end||'—'}</span></div>
       <div class="sc-row"><span style="color:var(--muted)">Tomorrow</span><span class="pill pill-on" style="font-size:10px">On shift</span></div>
-      <div class="sc-row"><span style="color:var(--muted)">Next RDO</span><span>${formatDateShort(addDays(today, 7-consec))}</span></div>`;
-
-    // Past 7 days strip
-    html += '<div class="week-strip"><div class="strip-label">Past 7 days</div><div class="strip-days">';
-    for (let i = 6; i >= 0; i--) {
-      const d = addDays(today, -i);
-      const isRDO = i % 4 === 0;
-      const dClass = isRDO ? 'ds-rdo' : 'ds-b';
-      html += `<div class="day-pip"><div class="dn">${DAYS_SHORT[d.getDay()]}</div>
-        <div class="ds ${dClass}">
-          ${isRDO ? '<span class="ds-txt">RDO</span>' : `<span class="ds-time">${s.shift_start||'—'}</span><span class="ds-time">${s.shift_end||'—'}</span>`}
-        </div></div>`;
+      <div class="sc-row"><span style="color:var(--muted)">Next RDO</span><span>${fmtShort(addDays(today,7-consec))}</span></div>`;
+    html+='<div class="week-strip"><div class="strip-label">Past 7 days</div><div class="strip-days">';
+    for(let i=6;i>=0;i--){
+      const d=addDays(today,-i);
+      const rdo=i%4===0;
+      html+=`<div class="day-pip"><div class="dn">${DAYS_S[d.getDay()]}</div><div class="ds ${rdo?'ds-rdo':'ds-b'}">${rdo?'<span class="ds-txt">RDO</span>':`<span class="ds-time">${s.shift_start||'—'}</span><span class="ds-time">${s.shift_end||'—'}</span>`}</div></div>`;
     }
-    html += '</div></div>';
-
-    // Next 7 days strip
-    html += '<div class="week-strip" style="border-bottom:none"><div class="strip-label">Next 7 days</div><div class="strip-days">';
-    for (let i = 1; i <= 7; i++) {
-      const d = addDays(today, i);
-      const isRDO = i % 4 === 0;
-      const dClass = isRDO ? 'ds-rdo' : 'ds-b';
-      const dLabel = isRDO ? 'RDO' : 'B';
-      html += `<div class="day-pip"><div class="dn">${DAYS_SHORT[d.getDay()]}</div><div class="ds ${dClass}"><span class="ds-txt">${dLabel}</span></div></div>`;
+    html+='</div></div>';
+    html+='<div class="week-strip" style="border-bottom:none"><div class="strip-label">Next 7 days</div><div class="strip-days">';
+    for(let i=1;i<=7;i++){
+      const d=addDays(today,i);
+      const rdo=i%4===0;
+      html+=`<div class="day-pip"><div class="dn">${DAYS_S[d.getDay()]}</div><div class="ds ${rdo?'ds-rdo':'ds-b'}"><span class="ds-txt">${rdo?'RDO':'B'}</span></div></div>`;
     }
-    html += '</div></div>';
-
-    if (isFlagged) html += '<div class="flag-bar red"><div class="flag-dot"></div>6 consecutive days — RDO required</div>';
-    else if (isWarned) html += '<div class="flag-bar amber"><div class="flag-dot"></div>Approaching fatigue limit — monitor closely</div>';
-
-    html += '</div>';
+    html+='</div></div>';
+    if(isFlagged)html+='<div class="flag-bar red"><div class="flag-dot"></div>6 consecutive days — RDO required</div>';
+    else if(isWarned)html+='<div class="flag-bar amber"><div class="flag-dot"></div>Approaching fatigue limit — monitor closely</div>';
+    html+='</div>';
   });
-
-  document.getElementById('tab-staff').innerHTML = html;
+  document.getElementById('tab-staff').innerHTML=html;
 }
 
-// AIRCRAFT TAB
-function renderAircraft() {
-  const today = todayISO();
-  let html = '';
-
-  appData.aircraft.forEach(ac => {
-    const todayFlights = appData.flights.filter(f => f.aircraft_registration === ac.registration && f.flight_date === today);
-    const firstDep = todayFlights.find(f => f.route && f.route.includes('NAN'));
-    const lastArr = [...todayFlights].reverse().find(f => f.route && f.route.includes('YAK → NAN'));
-    const sectors = todayFlights.length;
-    const statusClass = ac.status==='aog'?'badge-aog':ac.status==='u/s'?'badge-us':ac.status==='mx'?'badge-mx':'badge-ok';
-    const statusLabel = ac.status==='aog'?'AOG':ac.status==='u/s'?'U/S':ac.status==='mx'?'In MX':'Serviceable';
-    const shortReg = ac.registration.split('-')[1];
-    const iconClass = shortReg === 'KPI' ? 'kpi' : shortReg === 'OMO' ? 'omo' : ac.status === 'aog' ? 'isl' : 'isl ok';
-    const conflict = detectConflicts(ac.registration, new Date());
-
-    html += `<div class="ac-tab-card${conflict?' conflict':''}" onclick="openMonthView('${ac.registration}')">
+// AIRCRAFT
+function renderAircraft(){
+  const today=todayISO();
+  let html='';
+  appData.aircraft.forEach(ac=>{
+    const acF=appData.flights.filter(f=>f.aircraft_registration===ac.registration&&f.flight_date===today);
+    const firstDep=acF[0];
+    const lastArr=acF[acF.length-1];
+    const shortReg=ac.registration.split('-')[1];
+    const iconBg=shortReg==='KPI'?'rgba(245,158,11,0.2)':shortReg==='OMO'?'rgba(52,211,153,0.15)':ac.status==='aog'?'rgba(255,77,77,0.15)':'rgba(52,211,153,0.15)';
+    const iconColor=shortReg==='KPI'?'var(--amber)':shortReg==='OMO'?'var(--green)':ac.status==='aog'?'var(--red)':'var(--green)';
+    const conflict=detectConflict(ac.registration,new Date());
+    html+=`<div class="ac-tab-card${conflict?' conflict':''}" onclick="openMonthView('${ac.registration}')">
       <div class="ac-tab-header">
-        <div class="ac-tab-icon ${iconClass}">${shortReg}</div>
+        <div class="ac-tab-icon" style="background:${iconBg};color:${iconColor}">${shortReg}</div>
         <div class="ac-tab-info">
           <div class="ac-tab-reg">${ac.registration}</div>
-          <div class="ac-tab-times">
-            ${firstDep ? `&#9992; <span>${firstDep.departure_time}</span>` : ''}
-            ${lastArr ? ` &#8600; <span>${lastArr.departure_time}</span>` : ''}
-            ${sectors > 0 ? ` · <span>${sectors}s</span>` : ac.status === 'aog' ? '<span style="color:var(--red)">Grounded</span>' : ac.status === 'mx' ? '<span style="color:var(--blue)">MX day</span>' : '<span>No flights</span>'}
-          </div>
+          <div class="ac-tab-times">${firstDep?`&#9992; <span>${firstDep.departure_time}</span>`:''}${lastArr&&lastArr!==firstDep?` &#8600; <span>${lastArr.departure_time}</span>`:''}${acF.length>0?` · <span>${acF.length}s</span>`:ac.status==='aog'?'<span style="color:var(--red)">Grounded</span>':ac.status==='mx'?'<span style="color:var(--blue)">MX day</span>':'<span>No flights</span>'}</div>
         </div>
-        <span class="badge ${statusClass}">${statusLabel}</span>
+        ${statusBadge(ac.status)}
       </div>
-      ${conflict ? `<div style="padding:6px 14px;font-size:11px;color:var(--red);border-top:0.5px solid rgba(255,77,77,0.2)">${conflict.msg}</div>` : ''}
+      ${conflict?`<div style="padding:6px 14px;font-size:11px;color:var(--red);border-top:0.5px solid rgba(255,77,77,0.2)">${conflict.msg}</div>`:''}
     </div>`;
   });
-
-  html += '<p style="font-size:11px;color:var(--muted);text-align:center;padding:8px 0">Tap an aircraft to see monthly schedule</p>';
-  document.getElementById('tab-aircraft').innerHTML = html;
+  html+='<p style="font-size:11px;color:var(--muted);text-align:center;padding:8px 0">Tap an aircraft to see monthly schedule</p>';
+  document.getElementById('tab-aircraft').innerHTML=html;
 }
 
-function openMonthView(reg) {
-  const ac = appData.aircraft.find(a => a.registration === reg);
-  const statusClass = ac.status==='aog'?'badge-aog':ac.status==='u/s'?'badge-us':ac.status==='mx'?'badge-mx':'badge-ok';
-  const statusLabel = ac.status==='aog'?'AOG':ac.status==='u/s'?'U/S':ac.status==='mx'?'In MX':'Serviceable';
-  document.getElementById('month-view-title').textContent = `${reg} — June 2026`;
-  document.getElementById('month-view-badge').className = `badge ${statusClass}`;
-  document.getElementById('month-view-badge').textContent = statusLabel;
-
-  const today = new Date();
-  const todayISO_ = todayISO();
-  let html = '';
-
-  for (let day = 1; day <= 30; day++) {
-    const d = new Date(2026, 5, day);
-    const diso = dateToISO(d);
-    const isToday = diso === todayISO_;
-    const dayFlights = appData.flights.filter(f => f.aircraft_registration === reg && f.flight_date === diso);
-    const conflict = detectConflicts(reg, d);
-
-    const dateLabel = `${DAYS_SHORT[d.getDay()]} ${day}`;
-    let content = '';
-    let rowClass = '';
-
-    if (isToday) rowClass = 'today-row';
-    if (conflict) rowClass = 'has-conflict';
-
-    if (dayFlights.length > 0) {
-      const firstDep = dayFlights[0];
-      const lastArr = dayFlights[dayFlights.length - 1];
-      content = `&#9992;${firstDep.departure_time||''} &#8600;${lastArr.departure_time||''} ${dayFlights.length}s`;
-      if (conflict) content += ` <span class="mr-conflict">⚠ Conflict</span>`;
-    } else if (conflict) {
-      content = `<span class="mr-conflict">⚠ ${conflict.msg}</span>`;
+function openMonthView(reg){
+  const ac=appData.aircraft.find(a=>a.registration===reg);
+  document.getElementById('month-view-title').textContent=`${reg} — June 2026`;
+  document.getElementById('month-view-badge').className=`badge ${ac.status==='aog'?'badge-aog':ac.status==='mx'?'badge-mx':'badge-ok'}`;
+  document.getElementById('month-view-badge').textContent=ac.status==='aog'?'AOG':ac.status==='mx'?'In MX':'Serviceable';
+  const todayISO_=todayISO();
+  let html='';
+  for(let day=1;day<=30;day++){
+    const d=new Date(2026,5,day);
+    const diso=dateISO(d);
+    const isToday=diso===todayISO_;
+    const dayF=appData.flights.filter(f=>f.aircraft_registration===reg&&f.flight_date===diso);
+    const conflict=detectConflict(reg,d);
+    let content='',rowClass='';
+    if(isToday)rowClass='today-row';
+    if(conflict)rowClass='has-conflict';
+    if(dayF.length>0){
+      content=`&#9992;${dayF[0].departure_time||''} &#8600;${dayF[dayF.length-1].departure_time||''} ${dayF.length}s`;
+      if(conflict)content+=` <span class="mr-conflict">⚠ Conflict</span>`;
+    } else if(conflict){
+      content=`<span class="mr-conflict">⚠ ${conflict.msg}</span>`;
     } else {
-      content = '<span class="mr-dash">—</span>';
+      content='<span class="mr-dash">—</span>';
     }
-
-    html += `<div class="month-row ${rowClass}">
-      <span class="mr-date${isToday?' today-date':''}">${dateLabel}</span>
-      <span class="mr-content">${content}</span>
-    </div>`;
+    html+=`<div class="month-row ${rowClass}"><span class="mr-date${isToday?' today-date':''}">${DAYS_S[d.getDay()]} ${day}</span><span class="mr-content">${content}</span></div>`;
   }
-
-  document.getElementById('month-view-list').innerHTML = html;
-  document.getElementById('month-view').style.display = 'block';
+  document.getElementById('month-view-list').innerHTML=html;
+  document.getElementById('month-view').style.display='block';
 }
 
-function closeMonthView() { document.getElementById('month-view').style.display = 'none'; }
+function closeMonthView(){document.getElementById('month-view').style.display='none'}
 
-// CHAT & VOICE
-async function handleChat(message) {
-  const msg = message.trim();
-  if (!msg) return;
+// CHAT
+function sendChat(){
+  const input=document.getElementById('chat-input');
+  handleChat(input.value);
+  input.value='';
+}
 
-  const lower = msg.toLowerCase();
+document.getElementById('chat-input').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
 
-  if (lower.includes('reminder') || lower.includes('remember')) {
-    const content = msg.replace(/add reminder[:\-]?\s*/i,'').replace(/remember[:\-]?\s*/i,'').replace(/reminder[:\-]?\s*/i,'');
-    await db.from('reminders').insert({content, source:'chat'});
+async function handleChat(msg){
+  msg=msg.trim();
+  if(!msg)return;
+  const lower=msg.toLowerCase();
+  if(lower.includes('reminder')||lower.includes('remember')){
+    const content=msg.replace(/add reminder[:\-]?\s*/i,'').replace(/remember[:\-]?\s*/i,'').replace(/reminder[:\-]?\s*/i,'');
+    await db.from('reminders').insert({content,source:'chat'});
     await loadAll();
     return;
   }
-
-  const regs = ['dq-kpi','dq-omo','dq-isl'];
-  const reg = regs.find(r => lower.includes(r));
-  if (reg) {
-    const status = lower.includes('aog') ? 'aog' : lower.includes('u/s') ? 'u/s' : lower.includes(' mx') ? 'mx' : lower.includes('serviceable') ? 'serviceable' : null;
-    if (status) {
-      await db.from('aircraft').update({status, updated_at: new Date().toISOString()}).eq('registration', reg.toUpperCase());
-      await loadAll();
-      return;
-    }
+  const regs=['dq-kpi','dq-omo','dq-isl'];
+  const reg=regs.find(r=>lower.includes(r));
+  if(reg){
+    const status=lower.includes('aog')?'aog':lower.includes('u/s')?'u/s':lower.includes(' mx')?'mx':lower.includes('serviceable')?'serviceable':null;
+    if(status){await db.from('aircraft').update({status,updated_at:new Date().toISOString()}).eq('registration',reg.toUpperCase());await loadAll();return}
   }
-
-  alert(`Command not recognised yet. Try:\n• "DQ-ISL serviceable"\n• "DQ-KPI AOG"\n• "add reminder: your note here"\n\nFull AI chat coming in the next update.`);
+  alert('Try:\n• "DQ-ISL serviceable"\n• "DQ-KPI AOG"\n• "add reminder: your note"\n\nFull AI chat in next update.');
 }
 
-document.getElementById('chat-send').addEventListener('click', () => {
-  const input = document.getElementById('chat-input');
-  handleChat(input.value);
-  input.value = '';
-});
-
-document.getElementById('chat-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') { handleChat(e.target.value); e.target.value = ''; }
-});
-
-function toggleMic() {
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    alert('Voice input not supported on this browser. Try Chrome or Safari.');
-    return;
-  }
-  const btn = document.getElementById('mic-btn');
-  if (recognition) {
+// VOICE — Safari-safe single-shot approach
+function toggleMic(){
+  const btn=document.getElementById('mic-btn');
+  const hint=document.getElementById('mic-hint');
+  if(recognition){
     recognition.stop();
-    recognition = null;
+    recognition=null;
     btn.classList.remove('listening');
+    hint.textContent='';
     return;
   }
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SR();
-  recognition.lang = 'en-AU';
-  recognition.interimResults = false;
-  recognition.onresult = e => {
-    const transcript = e.results[0][0].transcript;
-    document.getElementById('chat-input').value = transcript;
-    handleChat(transcript);
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert('Voice input not supported on this browser. Try Chrome or Safari on iOS 17+.');return}
+  try{
+    recognition=new SR();
+    recognition.lang='en-AU';
+    recognition.interimResults=false;
+    recognition.maxAlternatives=1;
+    recognition.onstart=()=>{btn.classList.add('listening');hint.textContent='Listening... tap mic to stop'};
+    recognition.onresult=e=>{
+      const t=e.results[0][0].transcript;
+      document.getElementById('chat-input').value=t;
+      handleChat(t);
+      btn.classList.remove('listening');
+      hint.textContent='';
+      recognition=null;
+    };
+    recognition.onerror=e=>{
+      btn.classList.remove('listening');
+      hint.textContent='';
+      recognition=null;
+      if(e.error!=='aborted')alert('Voice error: '+e.error+'. Try typing instead.');
+    };
+    recognition.onend=()=>{btn.classList.remove('listening');hint.textContent='';recognition=null};
+    recognition.start();
+  }catch(e){
     btn.classList.remove('listening');
-    recognition = null;
-  };
-  recognition.onerror = () => { btn.classList.remove('listening'); recognition = null; };
-  recognition.onend = () => { btn.classList.remove('listening'); recognition = null; };
-  recognition.start();
-  btn.classList.add('listening');
+    hint.textContent='';
+    recognition=null;
+    alert('Could not start voice input. Try typing instead.');
+  }
 }
 
 loadAll();
