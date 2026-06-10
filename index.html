@@ -512,13 +512,16 @@ function handleFacilityTap(el){
   const iso=el.getAttribute('data-iso');
   const makeComplete=el.getAttribute('data-complete')==='true';
   const content=el.querySelector('.check-text').textContent;
+  // Instant visual update — feels snappy
+  el.classList.toggle('done', makeComplete);
+  el.querySelector('.check-box').classList.toggle('checked', makeComplete);
+  el.setAttribute('data-complete', String(!makeComplete));
+  // Save to database in background — no re-render needed
   toggleFacility(content, makeComplete, iso);
 }
 
 async function toggleFacility(content, makeComplete, iso){
-  // Delete cache first to ensure clean state
   delete planCache[iso];
-  // Persist to database — upsert by content+date to prevent duplicates
   const {data:existing}=await db.from('plan_items')
     .select('id')
     .eq('plan_date',iso)
@@ -530,10 +533,6 @@ async function toggleFacility(content, makeComplete, iso){
   } else {
     await db.from('plan_items').insert({plan_date:iso,item_type:'facility',content,is_complete:makeComplete});
   }
-  // Re-render from fresh database state — scroll position preserved
-  const scrollPos=document.getElementById('tab-dailyplan').scrollTop;
-  await renderDailyPlan(currentPlanDate);
-  setTimeout(()=>{document.getElementById('tab-dailyplan').scrollTop=scrollPos;},150);
 }
 
 
