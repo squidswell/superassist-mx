@@ -421,30 +421,16 @@ async function saveEODNotes(iso, notes){
   delete planCache[iso];
 }
 
-async function carryForwardItems(iso){
-  const yesterday=dateISO(addDays(new Date(iso),-1));
-  const {data:oldItems}=await db.from('plan_items').select('*').eq('plan_date',yesterday).eq('carry_forward',true).eq('is_complete',false).in('item_type',['ongoing','shopping']);
-  if(!oldItems||oldItems.length===0) return;
-  const {data:todayItems}=await db.from('plan_items').select('id').eq('plan_date',iso).limit(1);
-  if(todayItems&&todayItems.length>0) return;
-  const newItems=oldItems.map(item=>({plan_date:iso,item_type:item.item_type,content:item.content,is_complete:false,sort_order:item.sort_order,carry_forward:true}));
-  if(newItems.length>0) await db.from('plan_items').insert(newItems);
-  delete planCache[iso];
-}
-
 async function renderDailyPlan(date){
   currentPlanDate=date;
   const today=new Date();
   const iso=dateISO(date);
-  if(iso===todayISO()) await carryForwardItems(iso);
   const [planData] = await Promise.all([loadPlanData(iso)]);
   const todayFlights=appData.flights.filter(f=>f.flight_date===iso);
   const todayStaff=appData.staff.filter(s=>s.shift_date===iso);
   const conflicts=appData.aircraft.map(ac=>detectConflict(ac.registration,date)).filter(Boolean);
   const facilities=planData.items.filter(i=>i.item_type==='facility');
   const priorities=planData.items.filter(i=>i.item_type==='priority');
-  const ongoing=planData.items.filter(i=>i.item_type==='ongoing');
-  const shopping=planData.items.filter(i=>i.item_type==='shopping');
   const defaultFacilities=['FOD walk','Fuel bowser full at end of day','Empty waste fuel','End of day hangar clean','Daily inspection KPI','Daily inspection OMO','UTE inspection','Tug inspection','Tool control'];
 
   let html='<div class="day-scroll" id="plan-day-scroll">';
@@ -492,16 +478,6 @@ async function renderDailyPlan(date){
   priorities.forEach(item=>{html+=`<div class="priority-item" style="display:flex;justify-content:space-between">${item.content}<span onclick="deletePlanItem('${item.id}','${iso}')" style="font-size:18px;color:var(--muted);opacity:0.4;cursor:pointer;flex-shrink:0;margin-left:8px">×</span></div>`});
   html+=`<button class="add-btn" onclick="promptAddItem('priority','${iso}')">+ Add priority</button></div>`;
 
-  html+='<div class="sec-label">Ongoing</div>';
-  ongoing.forEach(item=>{
-    const age=Math.max(0,Math.floor((new Date()-new Date(item.created_at))/(1000*60*60*24)));
-    html+=`<div class="ongoing-item"><span>${item.content}</span><div style="display:flex;align-items:center;gap:8px"><span class="ongoing-age">${age}d</span><span onclick="deletePlanItem('${item.id}','${iso}')" style="font-size:18px;color:var(--muted);opacity:0.4;cursor:pointer">×</span></div></div>`;
-  });
-  html+=`<button class="add-btn" onclick="promptAddItem('ongoing','${iso}')">+ Add ongoing item</button>`;
-
-  html+='<div class="sec-label">Shopping list</div>';
-  shopping.forEach(item=>{html+=`<div class="shop-item" style="display:flex;justify-content:space-between;align-items:center"><span>${item.content}</span><span onclick="deletePlanItem('${item.id}','${iso}')" style="font-size:18px;color:var(--muted);opacity:0.4;cursor:pointer">×</span></div>`});
-  html+=`<button class="add-btn" onclick="promptAddItem('shopping','${iso}')">+ Add to list</button>`;
 
   html+='<div class="sec-label">End of day notes</div>';
   html+=`<div class="eod-area" contenteditable="true" id="eod-notes" onblur="saveEODNotes('${iso}',this.innerText.trim())">${planData.eod_notes||'Tap to add end of day notes...'}</div>`;
