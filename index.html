@@ -416,7 +416,7 @@ function renderDailyPlan(date){
   }
 
   // Start time planner — follows current plan date, no separate navigation
-  html+=renderSTP(date);
+  html+=`<div id="stp-container">${renderSTP(date)}</div>`;
 
   html+='<div class="sec-label">Facilities</div><div class="checklist">';
   ['FOD walk','Fuel bowser full at end of day','Empty waste fuel','End of day hangar clean','Daily inspection KPI','Daily inspection OMO','UTE inspection','Tug inspection','Tool control'].forEach((item,i)=>{
@@ -446,36 +446,46 @@ function renderDailyPlan(date){
   },100);
 }
 
+// stpTimes stores per-day overrides: { 'YYYY-MM-DD': { staffId: 'HH:MM', ... } }
+const stpTimes={};
+
+function getStpStaff(date){
+  const iso=dateISO(date);
+  // Use today's staff list as the roster for all days — same people, different times
+  const base=appData.staff.filter(s=>s.shift_date===todayISO());
+  // If we have actual data for this date, use it; otherwise use today's staff as template
+  const dated=appData.staff.filter(s=>s.shift_date===iso);
+  const staff=dated.length>0?dated:base;
+  // Apply any day-specific time overrides stored in stpTimes
+  const overrides=stpTimes[iso]||{};
+  return staff.map(s=>({...s,shift_start:overrides[s.id]||s.shift_start,_planDate:iso}));
+}
+
 function renderSTP(date){
   const iso=dateISO(date);
-  const stpStaff=appData.staff.filter(s=>s.shift_date===iso);
+  const stpStaff=getStpStaff(date);
 
   let html='<div class="sec-label" style="margin-bottom:0">Start time planner</div>';
   html+=`<div class="stp-toggle" onclick="toggleSTP()"><span class="stp-toggle-label">${fmtShort(date)}</span><span class="stp-toggle-btn" id="stp-btn">${stpExpanded?'Hide':'Edit times'}</span></div>`;
 
   if(stpExpanded){
-    html+='<div class="stp-list">';
-    if(stpStaff.length===0){
-      html+='<p style="font-size:12px;color:var(--muted);font-style:italic;padding:4px 0">No staff data for this day.</p>';
-    } else {
-      stpStaff.forEach(s=>{
-        const hasTime=s.shift_start;
-        html+=`<div class="stp-row" onclick="openPicker('${s.id}','${s.name}','${s.shift_start||''}')"><span class="stp-name">${s.name}</span><span class="stp-time${hasTime?'':' unset'}">${hasTime||'—'}</span></div>`;
-      });
-    }
+    html+='<div class="stp-list" id="stp-list">';
+    stpStaff.forEach(s=>{
+      const hasTime=s.shift_start;
+      html+=`<div class="stp-row" onclick="openPickerForDay('${s.id}','${s.name}','${s.shift_start||''}','${iso}')"><span class="stp-name">${s.name}</span><span class="stp-time${hasTime?'':' unset'}">${hasTime||'—'}</span></div>`;
+    });
     html+='</div>';
   }
 
-  // Draft message — always visible, grouped by time
-  const timed=stpStaff.filter(s=>s.shift_start).sort((a,b)=>a.shift_start.localeCompare(b.shift_start));
+  // Draft — always visible, grouped by time
   const groups={};
-  timed.forEach(s=>{
+  stpStaff.filter(s=>s.shift_start).sort((a,b)=>a.shift_start.localeCompare(b.shift_start)).forEach(s=>{
     const k=s.shift_start;
     if(!groups[k])groups[k]=[];
     groups[k].push(s.name.split(' ')[0]);
   });
 
-  html+='<div class="draft-box"><div class="draft-label">Draft message</div><div class="draft-content" id="draft-content">';
+  html+='<div class="draft-box" id="stp-draft"><div class="draft-label">Draft message</div><div class="draft-content" id="draft-content">';
   if(Object.keys(groups).length===0){
     html+='<span style="color:var(--muted);font-style:italic">Set start times above to generate draft</span>';
   } else {
@@ -487,20 +497,27 @@ function renderSTP(date){
 
 function toggleSTP(){
   stpExpanded=!stpExpanded;
-  renderDailyPlan(currentPlanDate);
+  // Only re-render the STP section — preserve scroll position
+  const container=document.getElementById('stp-container');
+  if(container){
+    container.innerHTML=renderSTP(currentPlanDate);
+  }
 }
 
-function openPicker(id,name,current){
+function openPickerForDay(id,name,current,iso){
   const hours=['05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'];
   document.getElementById('picker-title').textContent=`Start time — ${name}`;
-  document.getElementById('picker-grid').innerHTML=hours.map(h=>`<div class="picker-opt${h===current?' selected':''}" onclick="selectTime('${id}','${h}')">${h}</div>`).join('');
+  document.getElementById('picker-grid').innerHTML=hours.map(h=>`<div class="picker-opt${h===current?' selected':''}" onclick="selectTimeForDay('${id}','${h}','${iso}')">${h}</div>`).join('');
   document.getElementById('picker-overlay').style.display='flex';
 }
 
-async function selectTime(id,time){
-  await db.from('staff').update({shift_start:time}).eq('id',id);
+async function selectTimeForDay(id,time,iso){
+  if(!stpTimes[iso])stpTimes[iso]={};
+  stpTimes[iso][id]=time;
+  if(iso===todayISO()){await db.from("staff").update({shift_start:time}).eq("id",id);await loadAll();}
   closePicker();
-  await loadAll();
+  const container=document.getElementById("stp-container");
+  if(container)container.innerHTML=renderSTP(currentPlanDate);
 }
 
 function closePicker(){document.getElementById('picker-overlay').style.display='none'}
