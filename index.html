@@ -406,7 +406,7 @@ async function togglePlanItem(id, isComplete, iso){
   delete planCache[iso];
   const scrollPos=document.getElementById('tab-dailyplan').scrollTop;
   await renderDailyPlan(currentPlanDate);
-  setTimeout(()=>{document.getElementById('tab-dailyplan').scrollTop=scrollPos;},50);
+  setTimeout(()=>{document.getElementById('tab-dailyplan').scrollTop=scrollPos;},150);
 }
 
 async function deletePlanItem(id, iso){
@@ -414,7 +414,7 @@ async function deletePlanItem(id, iso){
   delete planCache[iso];
   const scrollPos=document.getElementById('tab-dailyplan').scrollTop;
   await renderDailyPlan(currentPlanDate);
-  setTimeout(()=>{document.getElementById('tab-dailyplan').scrollTop=scrollPos;},50);
+  setTimeout(()=>{document.getElementById('tab-dailyplan').scrollTop=scrollPos;},150);
 }
 
 async function saveEODNotes(iso, notes){
@@ -426,7 +426,7 @@ async function renderDailyPlan(date){
   currentPlanDate=date;
   const today=new Date();
   const iso=dateISO(date);
-  const [planData] = await Promise.all([loadPlanData(iso)]);
+  const planData = await loadPlanData(iso);
   const todayFlights=appData.flights.filter(f=>f.flight_date===iso);
   const todayStaff=appData.staff.filter(s=>s.shift_date===iso);
   const conflicts=appData.aircraft.map(ac=>detectConflict(ac.registration,date)).filter(Boolean);
@@ -481,10 +481,18 @@ async function renderDailyPlan(date){
 
 
   html+='<div class="sec-label">End of day notes</div>';
-  html+=`<div class="eod-area" contenteditable="true" id="eod-notes" onblur="saveEODNotes('${iso}',this.innerText.trim())">${planData.eod_notes||'Tap to add end of day notes...'}</div>`;
+  const eodSafe=(planData.eod_notes||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  html+=`<div class="eod-area" contenteditable="true" id="eod-notes" onblur="saveEODNotes('${iso}',this.innerText.trim())">${eodSafe||'Tap to add end of day notes...'}</div>`;
 
   document.getElementById('tab-dailyplan').innerHTML=html;
-  setTimeout(()=>{const s=document.getElementById('plan-day-scroll');if(s)s.children[7]?.scrollIntoView({inline:'center',behavior:'smooth'});},100);
+  setTimeout(()=>{
+    const s=document.getElementById('plan-day-scroll');
+    if(s){
+      const chips=Array.from(s.children);
+      const target=chips.find(c=>c.getAttribute&&c.onclick&&c.onclick.toString().includes(iso)) || chips[7];
+      if(target) target.scrollIntoView({inline:'center',behavior:'smooth'});
+    }
+  },100);
 }
 
 async function promptAddItem(type, iso){
@@ -496,6 +504,16 @@ async function promptAddItem(type, iso){
   const scrollPos=document.getElementById('tab-dailyplan').scrollTop;
   await renderDailyPlan(currentPlanDate);
   setTimeout(()=>{document.getElementById('tab-dailyplan').scrollTop=scrollPos;},50);
+}
+
+function handleFacilityTap(el){
+  const i=parseInt(el.getAttribute('data-facility'));
+  const iso=el.getAttribute('data-iso');
+  const makeComplete=el.getAttribute('data-complete')==='true';
+  const content=el.querySelector('.check-text').textContent;
+  // Update data attribute for next tap
+  el.setAttribute('data-complete', String(!makeComplete));
+  toggleFacility(content, makeComplete, iso);
 }
 
 async function toggleFacility(content, makeComplete, iso){
