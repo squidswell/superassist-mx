@@ -627,10 +627,37 @@ function renderAircraft(){
   document.getElementById('tab-aircraft').innerHTML=html;
 }
 
+// June 2026 MX calendar — sourced from maintenance calendar PDF
+const MX_CALENDAR = {
+  '2026-06-02': {'DQ-KPI': 'LH Fuel Nozzle + AV1 + RTNE'},
+  '2026-06-04': {'DQ-OMO': '100H Float + RTNE'},
+  '2026-06-06': {'DQ-KPI': '200H Float + Finlet + SB 6/521'},
+  '2026-06-07': {'DQ-KPI': '200H Float + Finlet + SB 6/521'},
+  '2026-06-08': {'DQ-KPI': '200H Float + Finlet + SB 6/521'},
+  '2026-06-09': {'DQ-KPI': 'NAV + Charts + Inertial Sep + RTNE'},
+  '2026-06-10': {'DQ-KPI': '300H Float'},
+  '2026-06-11': {'DQ-OMO': 'NAV + Ram Air + Inertial Sep + RTNE'},
+  '2026-06-13': {'DQ-KPI': '300H Float'},
+  '2026-06-16': {'DQ-KPI': 'Fire Ext + Ram Air + RTNE'},
+  '2026-06-17': {'DQ-ISL': 'Hyd Pump Bearing + 100H'},
+  '2026-06-18': {'DQ-OMO': 'Elev + Rudd Cable + SP1 J4'},
+  '2026-06-19': {'DQ-OMO': 'Elev + Rudd Cable + SP1 J4'},
+  '2026-06-20': {'DQ-ISL': 'Hyd Pump Bearing + 100H'},
+  '2026-06-23': {'DQ-KPI': 'Charts + Inertial Sep + ESIS Battery'},
+  '2026-06-24': {'DQ-ISL': '150H Engine + ELT + Fire Ext'},
+  '2026-06-25': {'DQ-OMO': 'Inertial Sep + RTNE'},
+  '2026-06-30': {'DQ-KPI': 'Terrain DB Upload + RTNE'},
+};
+
+function getMXNote(reg,diso){
+  const day=MX_CALENDAR[diso];
+  return day?day[reg]||null:null;
+}
+
 function openMonthView(reg){
   const ac=appData.aircraft.find(a=>a.registration===reg);
-  document.getElementById('month-view-title').textContent=`${reg} — June 2026`;
-  document.getElementById('month-view-badge').className=`badge ${ac.status==='aog'?'badge-aog':ac.status==='mx'?'badge-mx':'badge-ok'}`;
+  document.getElementById('month-view-title').textContent=reg+' — June 2026';
+  document.getElementById('month-view-badge').className='badge '+(ac.status==='aog'?'badge-aog':ac.status==='mx'?'badge-mx':'badge-ok');
   document.getElementById('month-view-badge').textContent=ac.status==='aog'?'AOG':ac.status==='mx'?'In MX':'Serviceable';
   const todayISO_=todayISO();
   let html='';
@@ -640,18 +667,23 @@ function openMonthView(reg){
     const isToday=diso===todayISO_;
     const dayF=appData.flights.filter(f=>f.aircraft_registration===reg&&f.flight_date===diso);
     const conflict=detectConflict(reg,d);
+    const mxNote=getMXNote(reg,diso);
     let content='',rowClass='';
     if(isToday)rowClass='today-row';
     if(conflict)rowClass='has-conflict';
     if(dayF.length>0){
-      content=`&#9992;${dayF[0].departure_time||''} &#8600;${dayF[dayF.length-1].departure_time||''} ${dayF.length}s`;
-      if(conflict)content+=` <span class="mr-conflict">⚠ Conflict</span>`;
+      content='&#9992;'+(dayF[0].departure_time||'')+' &#8600;'+(dayF[dayF.length-1].departure_time||'')+' '+dayF.length+'s';
+      if(mxNote)content+=' <span class="mr-mx">· '+mxNote+'</span>';
+      if(conflict)content+=' <span class="mr-conflict">⚠ Conflict</span>';
+    } else if(mxNote){
+      content='<span class="mr-mx">'+mxNote+'</span>';
+      if(conflict)content+=' <span class="mr-conflict">⚠ Conflict</span>';
     } else if(conflict){
-      content=`<span class="mr-conflict">⚠ ${conflict.msg}</span>`;
+      content='<span class="mr-conflict">⚠ '+conflict.msg+'</span>';
     } else {
       content='<span class="mr-dash">—</span>';
     }
-    html+=`<div class="month-row ${rowClass}"><span class="mr-date${isToday?' today-date':''}">${DAYS_S[d.getDay()]} ${day}</span><span class="mr-content">${content}</span></div>`;
+    html+='<div class="month-row '+rowClass+'"><span class="mr-date'+(isToday?' today-date':'')+'">'+DAYS_S[d.getDay()]+' '+day+'</span><span class="mr-content">'+content+'</span></div>';
   }
   document.getElementById('month-view-list').innerHTML=html;
   document.getElementById('month-view').style.display='block';
