@@ -147,7 +147,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .stp-time.unset{color:var(--muted);background:rgba(255,255,255,0.05)}
 .draft-box{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:12px}
 .draft-label{font-size:9px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-.draft-content{font-size:12px;color:var(--text);font-family:monospace;line-height:1.8;margin-bottom:10px}
+.draft-content{font-size:12px;color:var(--text);font-family:monospace;line-height:1.8;margin-bottom:10px;white-space:pre-wrap;outline:none;min-height:40px}
+.draft-content:focus{background:rgba(255,255,255,0.02);border-radius:4px}
 .copy-btn{width:100%;background:var(--green-bg);border:0.5px solid rgba(52,211,153,0.3);border-radius:8px;padding:10px;font-size:13px;font-weight:600;color:var(--green);cursor:pointer;letter-spacing:0.02em}
 
 /* TIME PICKER */
@@ -567,7 +568,7 @@ function renderSTP(date){
     html+='</div>';
   }
 
-  // Draft — always visible, grouped by time
+  // Draft — always visible, grouped by time, editable
   const groups={};
   stpStaff.filter(s=>s.shift_start).sort((a,b)=>a.shift_start.localeCompare(b.shift_start)).forEach(s=>{
     const k=s.shift_start;
@@ -575,11 +576,18 @@ function renderSTP(date){
     groups[k].push(s.name.split(' ')[0]);
   });
 
-  html+='<div class="draft-box" id="stp-draft"><div class="draft-label">Draft message</div><div class="draft-content" id="draft-content">';
+  // Format date as DD/MM/YY
+  const dd=String(date.getDate()).padStart(2,'0');
+  const mm=String(date.getMonth()+1).padStart(2,'0');
+  const yy=String(date.getFullYear()).slice(-2);
+  const dateLine=`${dd}/${mm}/${yy}`;
+
+  html+='<div class="draft-box" id="stp-draft"><div class="draft-label">Draft message</div><div class="draft-content" id="draft-content" contenteditable="true" spellcheck="false">';
   if(Object.keys(groups).length===0){
-    html+='<span style="color:var(--muted);font-style:italic">Set start times above to generate draft</span>';
+    html+=`${dateLine}\n\nSet start times above to generate draft`;
   } else {
-    Object.keys(groups).sort().forEach(t=>{html+=`${t} ${groups[t].join(', ')}<br>`});
+    html+=`${dateLine}\n`;
+    Object.keys(groups).sort().forEach(t=>{html+=`\n${t} ${groups[t].join(', ')}`});
   }
   html+='</div><button class="copy-btn" onclick="copyDraft()">Copy to clipboard</button></div>';
   return html;
