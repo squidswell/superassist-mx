@@ -473,7 +473,7 @@ async function renderDailyPlan(date){
   defaultFacilities.forEach((item,i)=>{
     const state=facilityState[item];
     const isComplete=state?state.complete:false;
-    html+=`<div class="check-item${isComplete?' done':''}" onclick="toggleFacility('${item.replace(/'/g,"\\\\'")}',${!isComplete},'${iso}')"><div class="check-box${isComplete?' checked':''}"></div><span class="check-text">${item}</span></div>`;
+    html+=`<div class="check-item${isComplete?' done':''}" data-iso="${iso}" data-complete="${!isComplete}" onclick="handleFacilityTap(this)"><div class="check-box${isComplete?' checked':''}"></div><span class="check-text">${item}</span></div>`;
   });
   html+='</div>';
 
