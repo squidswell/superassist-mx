@@ -38,6 +38,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .badge-us{background:var(--amber-bg);color:var(--amber)}
 .badge-mx{background:var(--blue-bg);color:var(--blue)}
 .badge-vip{background:var(--purple-bg);color:var(--purple);font-size:9px}
+.badge-transfer{background:rgba(251,191,36,0.15);color:#fbbf24;font-size:9px;font-weight:600;padding:2px 7px;border-radius:20px}
 .ac-card{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden}
 .ac-card.conflict{border-color:rgba(255,77,77,0.4)}
 .ac-header{padding:11px 13px;display:flex;align-items:center;gap:10px;border-bottom:0.5px solid var(--border)}
@@ -304,6 +305,26 @@ async function loadAll(){
     db.from('reminders').select('*').eq('is_active',true).order('created_at',{ascending:false})
   ]);
   appData={aircraft:ac.data||[],flights:fl.data||[],staff:st.data||[],dueItems:di.data||[],fuel:fu.data||[],reminders:rm.data||[]};
+
+  // Preload all daily plan data for the visible 15-day window in ONE query each
+  const now=new Date();
+  const startISO=dateISO(addDays(now,-7));
+  const endISO=dateISO(addDays(now,7));
+  const [allPlans, allItems]=await Promise.all([
+    db.from('daily_plan').select('*').gte('plan_date',startISO).lte('plan_date',endISO),
+    db.from('plan_items').select('*').gte('plan_date',startISO).lte('plan_date',endISO).order('sort_order')
+  ]);
+  // Build cache keyed by date
+  planCache={};
+  (allPlans.data||[]).forEach(p=>{
+    if(!planCache[p.plan_date])planCache[p.plan_date]={eod_notes:'',items:[]};
+    planCache[p.plan_date].eod_notes=p.eod_notes||'';
+  });
+  (allItems.data||[]).forEach(it=>{
+    if(!planCache[it.plan_date])planCache[it.plan_date]={eod_notes:'',items:[]};
+    planCache[it.plan_date].items.push(it);
+  });
+
   renderDashboard();
   renderDailyPlan(currentPlanDate);
   renderStaff();
@@ -333,6 +354,11 @@ function getAllConflicts(){
   return out;
 }
 
+function transferBadge(type){
+  if(!type) return '';
+  return `<span class="badge-transfer">${type}</span>`;
+}
+
 function statusBadge(status){
   const map={aog:'badge-aog',['u/s']:'badge-us',mx:'badge-mx',serviceable:'badge-ok'};
   const label={aog:'AOG',['u/s']:'U/S',mx:'In MX',serviceable:'Serviceable'};
@@ -360,7 +386,7 @@ function renderDashboard(){
     const c=detectConflict(ac.registration,new Date());
     html+=`<div class="ac-card${c?' conflict':''}"><div class="ac-header"><span class="ac-reg">${ac.registration}</span>${statusBadge(ac.status)}${c?'<span class="conflict-flag">Conflict</span>':''}</div>`;
     if(ac.details)html+=`<div class="ac-detail-row">${ac.details}</div>`;
-    if(acF.length>0){acF.forEach(f=>{html+=`<div class="flight-row"><span class="fl-time">${f.departure_time||''}</span><span class="fl-route">${f.route||''}</span>${f.is_vip?'<span class="badge badge-vip">VIP</span>':''}<span class="fl-pax">${f.pax_count>0?f.pax_count+' pax':''}</span></div>`})}
+    if(acF.length>0){acF.forEach(f=>{const isDep=f.route&&f.route.startsWith('NAN');const emoji=isDep?'🛫':'🛬';html+=`<div class="flight-row"><span class="fl-time">${emoji} ${f.departure_time||''}</span><span class="fl-route">${f.route||''}</span>${f.is_vip?'<span class="badge badge-vip">VIP</span>':''}${transferBadge(f.transfer_type)}<span class="fl-pax">${f.pax_count>0?f.pax_count+' pax':''}</span></div>`})}
     else{html+=`<div class="no-flights">${ac.status==='aog'?'Grounded':ac.status==='mx'?'MX day':'No flights today'}</div>`}
     html+='</div>';
   });
@@ -397,14 +423,22 @@ async function loadPlanData(iso){
   return planCache[iso];
 }
 
+async function refreshDayCache(iso){
+  const [plan, items]=await Promise.all([
+    db.from('daily_plan').select('*').eq('plan_date',iso).maybeSingle(),
+    db.from('plan_items').select('*').eq('plan_date',iso).order('sort_order')
+  ]);
+  planCache[iso]={eod_notes:plan.data?.eod_notes||'',items:items.data||[]};
+}
+
 async function savePlanItem(iso, type, content, isComplete=false, sortOrder=0){
   await db.from('plan_items').insert({plan_date:iso,item_type:type,content,is_complete:isComplete,sort_order:sortOrder});
-  delete planCache[iso];
+  await refreshDayCache(iso);
 }
 
 async function togglePlanItem(id, isComplete, iso){
   await db.from('plan_items').update({is_complete:isComplete}).eq('id',id);
-  delete planCache[iso];
+  await refreshDayCache(iso);
   const scrollPos=document.getElementById('tab-dailyplan').scrollTop;
   await renderDailyPlan(currentPlanDate);
   setTimeout(()=>{document.getElementById('tab-dailyplan').scrollTop=scrollPos;},150);
@@ -412,7 +446,7 @@ async function togglePlanItem(id, isComplete, iso){
 
 async function deletePlanItem(id, iso){
   await db.from('plan_items').delete().eq('id',id);
-  delete planCache[iso];
+  await refreshDayCache(iso);
   const scrollPos=document.getElementById('tab-dailyplan').scrollTop;
   await renderDailyPlan(currentPlanDate);
   setTimeout(()=>{document.getElementById('tab-dailyplan').scrollTop=scrollPos;},150);
@@ -420,16 +454,18 @@ async function deletePlanItem(id, iso){
 
 async function saveEODNotes(iso, notes){
   await db.from('daily_plan').upsert({plan_date:iso,eod_notes:notes,updated_at:new Date().toISOString()},{onConflict:'plan_date'});
-  delete planCache[iso];
+  if(planCache[iso]) planCache[iso].eod_notes=notes;
 }
 
 async function renderDailyPlan(date){
   currentPlanDate=date;
   const today=new Date();
   const iso=dateISO(date);
-  // Always fetch fresh data from DB — don't use cache when switching days
-  delete planCache[iso];
-  const planData = await loadPlanData(iso);
+  // Use preloaded cache — instant. Only fetch if this date isn't cached at all.
+  let planData = planCache[iso];
+  if(!planData){
+    planData = await loadPlanData(iso);
+  }
   const todayFlights=appData.flights.filter(f=>f.flight_date===iso);
   const todayStaff=appData.staff.filter(s=>s.shift_date===iso);
   const conflicts=appData.aircraft.map(ac=>detectConflict(ac.registration,date)).filter(Boolean);
@@ -451,8 +487,12 @@ async function renderDailyPlan(date){
   html+='<div class="sec-label">Aircraft</div>';
   appData.aircraft.forEach(ac=>{
     const acF=todayFlights.filter(f=>f.aircraft_registration===ac.registration);
-    html+=`<div class="ac-plan-block"><div class="ac-plan-header"><span class="ac-plan-reg">${ac.registration}</span><span class="ac-plan-crew">tap to assign crew</span>${statusBadge(ac.status)}</div>`;
-    if(acF.length>0){acF.forEach(f=>{html+=`<div class="fl-line"><span class="fl-t">${f.departure_time||''}</span><span class="fl-r">${f.route||''}</span>${f.is_vip?'<span class="badge badge-vip">VIP</span>':''}</div>`})}
+    const crewFlight=acF.find(f=>f.crew);
+    const crewDisplay=crewFlight&&crewFlight.crew?`🧑‍✈️ ${crewFlight.crew}`:'';
+    const mxNote=getMXNote(ac.registration,iso);
+    html+=`<div class="ac-plan-block"><div class="ac-plan-header"><span class="ac-plan-reg">${ac.registration}</span><span class="ac-plan-crew">${crewDisplay}</span>${statusBadge(ac.status)}</div>`;
+    if(mxNote)html+=`<div style="padding:6px 12px;font-size:11px;color:var(--amber);border-bottom:0.5px solid var(--border)">🔧 ${mxNote}</div>`;
+    if(acF.length>0){acF.forEach(f=>{const isDep=f.route&&f.route.startsWith('NAN');const emoji=isDep?'🛫':'🛬';html+=`<div class="fl-line"><span class="fl-t">${emoji} ${f.departure_time||''}</span><span class="fl-r">${f.route||''}</span>${f.is_vip?'<span class="badge badge-vip">VIP</span>':''}${transferBadge(f.transfer_type)}${f.pax_count>0?`<span style="font-size:11px;color:var(--muted)">${f.pax_count} pax</span>`:''}</div>`})}
     else{html+=`<div class="fl-line" style="color:var(--muted);font-style:italic">${ac.status==='aog'?'Grounded — no flights':ac.status==='mx'?'MX day — no flights':'No flights scheduled'}</div>`}
     html+='</div>';
   });
@@ -522,7 +562,6 @@ function handleFacilityTap(el){
 }
 
 async function toggleFacility(content, makeComplete, iso){
-  delete planCache[iso];
   const {data:existing}=await db.from('plan_items')
     .select('id')
     .eq('plan_date',iso)
@@ -533,6 +572,15 @@ async function toggleFacility(content, makeComplete, iso){
     await db.from('plan_items').update({is_complete:makeComplete}).eq('id',existing.id);
   } else {
     await db.from('plan_items').insert({plan_date:iso,item_type:'facility',content,is_complete:makeComplete});
+  }
+  // Update in-memory cache so state stays consistent without a full refetch
+  if(planCache[iso]){
+    const found=planCache[iso].items.find(i=>i.item_type==='facility'&&i.content===content);
+    if(found){
+      found.is_complete=makeComplete;
+    } else {
+      planCache[iso].items.push({plan_date:iso,item_type:'facility',content,is_complete:makeComplete,id:'temp-'+Date.now()});
+    }
   }
 }
 
@@ -561,9 +609,33 @@ function renderSTP(date){
 
   if(stpExpanded){
     html+='<div class="stp-list" id="stp-list">';
+    const yesterdayISO=dateISO(addDays(new Date(iso),-1));
     stpStaff.forEach(s=>{
       const hasTime=s.shift_start;
-      html+=`<div class="stp-row" onclick="openPickerForDay('${s.id}','${s.name}','${s.shift_start||''}','${iso}')"><span class="stp-name">${s.name}</span><span class="stp-time${hasTime?'':' unset'}">${hasTime||'—'}</span></div>`;
+      const isOn=s.status==='on_shift'||!s.status;
+      const statusLabel=s.status==='rdo'?'RDO':s.status==='al'?'A/L':s.status==='sick'?'SICK':'ON';
+      const statusStyle=isOn
+        ?'font-size:10px;font-weight:600;color:var(--green);background:rgba(52,211,153,0.12);padding:2px 7px;border-radius:20px;flex-shrink:0'
+        :'font-size:10px;font-weight:600;color:#fbbf24;background:rgba(251,191,36,0.12);padding:2px 7px;border-radius:20px;flex-shrink:0';
+      // Find yesterday's shift for this person
+      const yesterday=appData.staff.find(x=>x.name===s.name&&x.shift_date===yesterdayISO);
+      let yesterdayText='';
+      if(yesterday){
+        if(yesterday.status==='rdo') yesterdayText='Yesterday: RDO';
+        else if(yesterday.status==='al') yesterdayText='Yesterday: A/L';
+        else if(yesterday.status==='sick') yesterdayText='Yesterday: SICK';
+        else if(yesterday.shift_start) yesterdayText=`Yesterday: ${yesterday.shift_start}–${yesterday.shift_end||'?'}`;
+        else yesterdayText='Yesterday: ON';
+      } else {
+        yesterdayText='Yesterday: —';
+      }
+      const yest=`<span style="font-size:10px;color:var(--muted);flex-shrink:0">${yesterdayText}</span>`;
+      html+=`<div class="stp-row" style="flex-wrap:wrap;gap:6px" onclick="openPickerForDay('${s.id}','${s.name}','${s.shift_start||''}','${iso}')">
+        <span class="stp-name">${s.name}</span>
+        <span style="${statusStyle}">${statusLabel}</span>
+        ${yest}
+        <span class="stp-time${hasTime?'':' unset'}" style="margin-left:auto">${hasTime||'—'}</span>
+      </div>`;
     });
     html+='</div>';
   }
@@ -595,10 +667,15 @@ function renderSTP(date){
 
 function toggleSTP(){
   stpExpanded=!stpExpanded;
-  // Only re-render the STP section — preserve scroll position
   const container=document.getElementById('stp-container');
   if(container){
     container.innerHTML=renderSTP(currentPlanDate);
+  } else {
+    // Fallback — full re-render if container not found
+    const scrollPos=document.getElementById('tab-dailyplan').scrollTop;
+    renderDailyPlan(currentPlanDate).then(()=>{
+      setTimeout(()=>{document.getElementById('tab-dailyplan').scrollTop=scrollPos;},150);
+    });
   }
 }
 
@@ -614,8 +691,10 @@ async function selectTimeForDay(id,time,iso){
   stpTimes[iso][id]=time;
   if(iso===todayISO()){await db.from("staff").update({shift_start:time}).eq("id",id);await loadAll();}
   closePicker();
-  const container=document.getElementById("stp-container");
-  if(container)container.innerHTML=renderSTP(currentPlanDate);
+  const container=document.getElementById('stp-container');
+  if(container){
+    container.innerHTML=renderSTP(currentPlanDate);
+  }
 }
 
 function closePicker(){document.getElementById('picker-overlay').style.display='none'}
@@ -733,8 +812,7 @@ const MX_CALENDAR = {
   '2026-06-09': {'DQ-KPI': 'NAV + Charts + Inertial Sep + RTNE'},
   '2026-06-10': {'DQ-KPI': '300H Float'},
   '2026-06-11': {'DQ-KPI': '300H Float', 'DQ-OMO': 'NAV + Ram Air + Inertial Sep + RTNE'},
-  '2026-06-12': {'DQ-KPI': '300H Float'},
-  '2026-06-13': {'DQ-KPI': '300H Float'},
+
   '2026-06-16': {'DQ-KPI': 'Cockpit + Cabin Fire Ext + Ram Air + RTNE'},
   '2026-06-17': {'DQ-ISL': 'Hyd Pump Bearing + 100H + Biocide + Step Kit + Harness'},
   '2026-06-18': {'DQ-OMO': 'Elev + Rudd Cable + SP1 J4 + Pulley'},
