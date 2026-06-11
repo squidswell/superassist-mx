@@ -500,7 +500,7 @@ async function renderDailyPlan(date){
   if(todayStaff.length>0){
     html+='<div class="sec-label">Staff movements</div>';
     const groups={};
-    sortByRole(todayStaff).forEach(s=>{const k=s.shift_start||'TBC';if(!groups[k])groups[k]=[];groups[k].push(s.name.split(' ')[0])});
+    sortByRole(todayStaff).forEach(s=>{const k=s.shift_start||'Off shift';if(!groups[k])groups[k]=[];groups[k].push(s.name.split(' ')[0])});
     Object.keys(groups).sort().forEach(t=>{html+=`<div class="staff-move-card"><div class="sm-time">${t}</div><div class="sm-names">${groups[t].join(', ')}</div></div>`});
   }
 
@@ -879,19 +879,90 @@ async function handleChat(msg){
   msg=msg.trim();
   if(!msg)return;
   const lower=msg.toLowerCase();
+
+  // SHIFT SCHEDULE PARSER
+  // Handles format: "12.06.26\n0600 Nikil Paula\n0800 James Howard\n1100 Bryan"
+  // Also handles: "0600 Nikil Paula\n0800 James" (assumes today/tomorrow)
+  const lines=msg.split(/\n/).map(l=>l.trim()).filter(Boolean);
+  const timeLinePattern=/^(\d{3,4})\s+(.+)$/;
+  const dateLinePattern=/^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{2,4})$/;
+  const hasTimeLines=lines.some(l=>timeLinePattern.test(l));
+
+  if(hasTimeLines){
+    // Parse the date if present
+    let targetISO=todayISO();
+    const dateLine=lines.find(l=>dateLinePattern.test(l));
+    if(dateLine){
+      const m=dateLine.match(dateLinePattern);
+      const day=m[1].padStart(2,'0');
+      const month=m[2].padStart(2,'0');
+      const year=m[3].length===2?'20'+m[3]:m[3];
+      targetISO=`${year}-${month}-${day}`;
+    }
+
+    // Build name → time map
+    const assignments={};
+    lines.forEach(line=>{
+      const m=line.match(timeLinePattern);
+      if(!m)return;
+      const time=m[1].length===3?'0'+m[1]:m[1];
+      const formattedTime=time.slice(0,2)+':'+time.slice(2);
+      const names=m[2].split(/\s+/).filter(Boolean);
+      names.forEach(name=>{assignments[name.toLowerCase()]=formattedTime});
+    });
+
+    if(Object.keys(assignments).length===0){
+      alert('Could not read shift times. Try format:\n0600 Nikil Paula\n0800 James Howard');
+      return;
+    }
+
+    // Match names to staff records for this date
+    const staffForDay=appData.staff.filter(s=>s.shift_date===targetISO);
+    let matched=0;
+    for(const s of staffForDay){
+      const firstName=s.name.split(' ')[0].toLowerCase();
+      if(assignments[firstName]){
+        await db.from('staff').update({shift_start:assignments[firstName]}).eq('id',s.id);
+        matched++;
+      }
+    }
+
+    if(matched>0){
+      await loadAll();
+      // Switch to daily plan for that date
+      switchTab('dailyplan');
+      await renderDailyPlan(new Date(targetISO+'T00:00:00'));
+      showChatFeedback(`✓ Updated ${matched} start times for ${targetISO}`);
+    } else {
+      alert(`Found time assignments but no matching staff for ${targetISO}. Check the date and names match the roster.`);
+    }
+    return;
+  }
+
   if(lower.includes('reminder')||lower.includes('remember')){
     const content=msg.replace(/add reminder[:\-]?\s*/i,'').replace(/remember[:\-]?\s*/i,'').replace(/reminder[:\-]?\s*/i,'');
     await db.from('reminders').insert({content,source:'chat'});
     await loadAll();
+    showChatFeedback('✓ Reminder added');
     return;
   }
   const regs=['dq-kpi','dq-omo','dq-isl'];
   const reg=regs.find(r=>lower.includes(r));
   if(reg){
     const status=lower.includes('aog')?'aog':lower.includes('u/s')?'u/s':lower.includes(' mx')?'mx':lower.includes('serviceable')?'serviceable':null;
-    if(status){await db.from('aircraft').update({status,updated_at:new Date().toISOString()}).eq('registration',reg.toUpperCase());await loadAll();return}
+    if(status){
+      await db.from('aircraft').update({status,updated_at:new Date().toISOString()}).eq('registration',reg.toUpperCase());
+      await loadAll();
+      showChatFeedback(`✓ ${reg.toUpperCase()} updated to ${status}`);
+      return;
+    }
   }
-  alert('Try:\n• "DQ-ISL serviceable"\n• "DQ-KPI AOG"\n• "add reminder: your note"\n\nFull AI chat in next update.');
+  alert('Try:\n• "DQ-ISL serviceable"\n• "DQ-KPI AOG"\n• "add reminder: your note"\n• Paste shift schedule e.g:\n  12.06.26\n  0600 Nikil Paula\n  0800 James Howard');
+}
+
+function showChatFeedback(msg){
+  const hint=document.getElementById('mic-hint');
+  if(hint){hint.textContent=msg;hint.style.color='var(--green)';setTimeout(()=>{hint.textContent='';hint.style.color='';},3000);}
 }
 
 // VOICE — Safari-safe single-shot approach
