@@ -918,7 +918,7 @@ async function loadMXCalendar(){
     // Use local date parts for month boundaries
     const start = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
     const end = new Date(now.getFullYear(), now.getMonth() + 2, 1).toISOString();
-    const url = `https://www.googleapis.com/calendar/v3/calendars/${GCAL_CALENDAR_ID}/events?key=${GCAL_API_KEY}&timeMin=${encodeURIComponent(start)}&timeMax=${encodeURIComponent(end)}&singleEvents=true&orderBy=startTime&maxResults=100`;
+    const url = `https://www.googleapis.com/calendar/v3/calendars/${GCAL_CALENDAR_ID}/events?key=${GCAL_API_KEY}&timeMin=${encodeURIComponent(start)}&timeMax=${encodeURIComponent(end)}&singleEvents=true&orderBy=startTime&maxResults=100&fields=items(id,summary,start,end)`;
     const resp = await fetch(url);
     if(!resp.ok){
       console.warn('MX Calendar API error:', resp.status, await resp.text());
