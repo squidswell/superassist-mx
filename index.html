@@ -293,7 +293,9 @@ function todayISO(){
   const fiji = new Date(now.getTime() + (12 * 60 * 60 * 1000));
   return fiji.toISOString().split('T')[0];
 }
-function dateISO(d){return d.toISOString().split('T')[0]}
+function dateISO(d){
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
 function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
 function fmtDate(d){return `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`}
 function fmtShort(d){return `${DAYS_S[d.getDay()]} ${d.getDate()} ${MONTHS_S[d.getMonth()]}`}
@@ -913,37 +915,46 @@ let mxCalendarData = {}; // { 'YYYY-MM-DD': { 'DQ-KPI': 'task', ... } }
 async function loadMXCalendar(){
   try {
     const now = new Date();
+    // Use local date parts for month boundaries
     const start = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-    const end = new Date(now.getFullYear(), now.getMonth() + 2, 0).toISOString();
-    const url = `https://www.googleapis.com/calendar/v3/calendars/${GCAL_CALENDAR_ID}/events?key=${GCAL_API_KEY}&timeMin=${start}&timeMax=${end}&singleEvents=true&orderBy=startTime&maxResults=100`;
+    const end = new Date(now.getFullYear(), now.getMonth() + 2, 1).toISOString();
+    const url = `https://www.googleapis.com/calendar/v3/calendars/${GCAL_CALENDAR_ID}/events?key=${GCAL_API_KEY}&timeMin=${encodeURIComponent(start)}&timeMax=${encodeURIComponent(end)}&singleEvents=true&orderBy=startTime&maxResults=100`;
     const resp = await fetch(url);
+    if(!resp.ok){
+      console.warn('MX Calendar API error:', resp.status, await resp.text());
+      return;
+    }
     const data = await resp.json();
-    if(!data.items) return;
+    if(!data.items || data.items.length === 0){
+      console.warn('MX Calendar: no items returned');
+      return;
+    }
     mxCalendarData = {};
     data.items.forEach(event => {
       const title = event.summary || '';
-      // Extract aircraft registration from title — format "DQ-XXX — ..."
       const regMatch = title.match(/DQ-[A-Z]{3}/);
       if(!regMatch) return;
       const reg = regMatch[0];
-      const task = title.replace(/DQ-[A-Z]{3}\s*[—-]\s*/, '').trim();
-      // Expand multi-day events across all dates
-      // Parse date parts manually to avoid UTC timezone shift
-      const startDate = event.start.date || event.start.dateTime.split('T')[0];
-      const endDate = event.end.date || event.end.dateTime.split('T')[0];
+      const task = title.replace(/DQ-[A-Z]{3}\s*[—\-–]\s*/, '').trim();
+      // Use date field directly — all-day events have start.date not start.dateTime
+      const startDate = event.start.date || (event.start.dateTime||'').split('T')[0];
+      const endDate = event.end.date || (event.end.dateTime||'').split('T')[0];
+      if(!startDate || !endDate) return;
+      // Parse manually to avoid UTC shift
       const [sy,sm,sd] = startDate.split('-').map(Number);
       const [ey,em,ed] = endDate.split('-').map(Number);
-      const d = new Date(sy, sm-1, sd);
+      const cur = new Date(sy, sm-1, sd);
       const end_ = new Date(ey, em-1, ed);
-      while(d < end_) {
-        const iso = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      while(cur < end_){
+        const iso = dateISO(cur);
         if(!mxCalendarData[iso]) mxCalendarData[iso] = {};
         mxCalendarData[iso][reg] = task;
-        d.setDate(d.getDate() + 1);
+        cur.setDate(cur.getDate() + 1);
       }
     });
+    console.log('MX Calendar loaded:', Object.keys(mxCalendarData).length, 'dates');
   } catch(e) {
-    console.warn('MX Calendar load failed:', e);
+    console.warn('MX Calendar load failed:', e.message);
   }
 }
 
