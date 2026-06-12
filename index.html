@@ -372,6 +372,11 @@ function getAllConflicts(){
   return out;
 }
 
+function selectDay(iso){
+  const [y,m,d] = iso.split('-').map(Number);
+  renderDailyPlan(new Date(y, m-1, d));
+}
+
 function transferBadge(type){
   if(!type) return '';
   return `<span class="badge-transfer">${type}</span>`;
@@ -542,7 +547,7 @@ async function renderDailyPlan(date){
     const d=addDays(today,i);
     const diso=dateISO(d);
     const isToday=i===0, isPast=i<0, isSel=diso===iso;
-    html+=`<div class="day-chip${isToday?' today':''}${isPast?' past':''}" style="${isSel&&!isToday?'border-color:rgba(255,255,255,0.3)':''}" onclick="renderDailyPlan(new Date('${diso}'))"><div class="dc-d">${DAYS_S[d.getDay()]}</div><div class="dc-n">${d.getDate()}</div></div>`;
+    html+=`<div class="day-chip${isToday?' today':''}${isPast?' past':''}" style="${isSel&&!isToday?'border-color:rgba(255,255,255,0.3)':''}" onclick="selectDay('${diso}')"><div class="dc-d">${DAYS_S[d.getDay()]}</div><div class="dc-n">${d.getDate()}</div></div>`;
   }
   html+='</div>';
   html+=`<div class="plan-date-header">${fmtDate(date)}</div></div>`;
@@ -764,7 +769,10 @@ function openPickerForDay(id,name,current,iso){
   pickerContext = {id, iso};
   const hours=['05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'];
   document.getElementById('picker-title').textContent=`Start time — ${name}`;
-  document.getElementById('picker-grid').innerHTML=hours.map(h=>`<div class="picker-opt${h===current?' selected':''}" onclick="selectTimeForDay('${id}','${h}','${iso}')">${h}</div>`).join('');
+  const offSelected = current==='' || !current;
+  document.getElementById('picker-grid').innerHTML=
+    `<div class="picker-opt off-opt${offSelected?' selected':''}" style="grid-column:1/-1;color:var(--amber);background:${offSelected?'rgba(251,191,36,0.15)':'var(--surface2)'};border-color:${offSelected?'rgba(251,191,36,0.3)':'var(--border)'}" onclick="selectTimeForDay('${id}','','${iso}')">Off shift</div>`+
+    hours.map(h=>`<div class="picker-opt${h===current?' selected':''}" onclick="selectTimeForDay('${id}','${h}','${iso}')">${h}</div>`).join('');
   document.getElementById('picker-overlay').style.display='flex';
 }
 
@@ -920,12 +928,15 @@ async function loadMXCalendar(){
       const reg = regMatch[0];
       const task = title.replace(/DQ-[A-Z]{3}\s*[—-]\s*/, '').trim();
       // Expand multi-day events across all dates
+      // Parse date parts manually to avoid UTC timezone shift
       const startDate = event.start.date || event.start.dateTime.split('T')[0];
       const endDate = event.end.date || event.end.dateTime.split('T')[0];
-      const d = new Date(startDate);
-      const end_ = new Date(endDate);
+      const [sy,sm,sd] = startDate.split('-').map(Number);
+      const [ey,em,ed] = endDate.split('-').map(Number);
+      const d = new Date(sy, sm-1, sd);
+      const end_ = new Date(ey, em-1, ed);
       while(d < end_) {
-        const iso = d.toISOString().split('T')[0];
+        const iso = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
         if(!mxCalendarData[iso]) mxCalendarData[iso] = {};
         mxCalendarData[iso][reg] = task;
         d.setDate(d.getDate() + 1);
