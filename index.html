@@ -364,7 +364,9 @@ function detectConflict(reg,date){
 function getAllConflicts(){
   const out=[];
   const today=new Date();
-  appData.aircraft.forEach(ac=>{
+  const AC_ORDER=['DQ-OMO','DQ-KPI','DQ-ISL'];
+  const orderedAC=[...appData.aircraft].sort((a,b)=>AC_ORDER.indexOf(a.registration)-AC_ORDER.indexOf(b.registration));
+  orderedAC.forEach(ac=>{
     for(let i=0;i<7;i++){
       const d=addDays(today,i);
       const c=detectConflict(ac.registration,d);
@@ -556,7 +558,9 @@ async function renderDailyPlan(date){
   conflicts.forEach(c=>{html+=`<div class="alert red"><div class="alert-dot"></div><div class="alert-text"><strong>Schedule conflict</strong> — ${c.msg}</div></div>`});
 
   html+='<div class="sec-label">Aircraft</div>';
-  appData.aircraft.forEach(ac=>{
+  const AC_ORDER=['DQ-OMO','DQ-KPI','DQ-ISL'];
+  const orderedAC=[...appData.aircraft].sort((a,b)=>AC_ORDER.indexOf(a.registration)-AC_ORDER.indexOf(b.registration));
+  orderedAC.forEach(ac=>{
     const acF=todayFlights.filter(f=>f.aircraft_registration===ac.registration);
     const crewFlight=acF.find(f=>f.crew);
     const crewDisplay=crewFlight&&crewFlight.crew?`🧑‍✈️ ${crewFlight.crew}`:'';
@@ -884,7 +888,9 @@ function renderStaff(){
 function renderAircraft(){
   const today=todayISO();
   let html='';
-  appData.aircraft.forEach(ac=>{
+  const AC_ORDER=['DQ-OMO','DQ-KPI','DQ-ISL'];
+  const orderedAC=[...appData.aircraft].sort((a,b)=>AC_ORDER.indexOf(a.registration)-AC_ORDER.indexOf(b.registration));
+  orderedAC.forEach(ac=>{
     const acF=appData.flights.filter(f=>f.aircraft_registration===ac.registration&&f.flight_date===today);
     const firstDep=acF[0];
     const lastArr=acF[acF.length-1];
