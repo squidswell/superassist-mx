@@ -314,15 +314,16 @@ function switchTab(tab){
 
 async function loadAll(){
   const today=todayISO();
-  const [ac,fl,st,di,fu,rm]=await Promise.all([
+  const [ac,fl,st,di,fu,rm,pp]=await Promise.all([
     db.from('aircraft').select('*').order('registration'),
     db.from('flights').select('*').order('flight_date').order('departure_time'),
     db.from('staff').select('*').order('shift_date').order('shift_start'),
     db.from('due_items').select('*').order('urgency').order('hours_remaining'),
     db.from('fuel').select('*').order('recorded_at',{ascending:false}).limit(8),
-    db.from('reminders').select('*').eq('is_active',true).order('created_at',{ascending:false})
+    db.from('reminders').select('*').eq('is_active',true).order('created_at',{ascending:false}),
+    db.from('plan_items').select('*').eq('item_type','priority').eq('pinned',true).order('created_at',{ascending:false})
   ]);
-  appData={aircraft:ac.data||[],flights:fl.data||[],staff:st.data||[],dueItems:di.data||[],fuel:fu.data||[],reminders:rm.data||[]};
+  appData={aircraft:ac.data||[],flights:fl.data||[],staff:st.data||[],dueItems:di.data||[],fuel:fu.data||[],reminders:rm.data||[],pinnedPriorities:pp.data||[]};
 
   // Preload all daily plan data for the visible 15-day window in ONE query each
   const now=new Date();
@@ -448,7 +449,7 @@ function renderDashboard(){
     html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">';
     todayStaff.forEach(s=>{
       const isOn=s.status==='on_shift';
-      const sub=isOn?(s.shift_start||'—'):(s.status==='rdo'?'RDO':s.status==='al'?'A/L':s.status==='sick'?'Sick':'Off');
+      const sub=isOn?(s.shift_start?'Start '+s.shift_start:'—'):(s.status==='rdo'?'RDO':s.status==='al'?'A/L':s.status==='sick'?'Sick':'Off');
       const subColor=isOn?'var(--green)':'#fbbf24';
       html+=`<div style="background:var(--surface);border:0.5px solid var(--border);border-radius:8px;padding:7px 10px">
         <div style="font-size:12px;font-weight:500">${s.name}</div>
@@ -473,6 +474,18 @@ function renderDashboard(){
       </div>`;
     });
     html+='</div>';
+  }
+
+  // Pinned priorities
+  const pinnedPriorities=appData.pinnedPriorities||[];
+  if(pinnedPriorities.length>0){
+    html+='<div class="sec-label">Priorities</div>';
+    pinnedPriorities.forEach(p=>{
+      html+=`<div style="background:var(--amber-bg);border:0.5px solid rgba(245,158,11,0.25);border-radius:10px;padding:9px 12px;font-size:12px;color:#fcd34d;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+        <span>${p.content}</span>
+        <span onclick="togglePinPriority('${p.id}','${today}',false)" style="font-size:14px;cursor:pointer;opacity:0.6" title="Unpin">📌</span>
+      </div>`;
+    });
   }
 
   // Reminders
@@ -594,7 +607,16 @@ async function renderDailyPlan(date){
   html+='</div>';
 
   html+=`<div class="sec-label">My priorities</div><div>`;
-  priorities.forEach(item=>{html+=`<div class="priority-item" style="display:flex;justify-content:space-between">${item.content}<span onclick="deletePlanItem('${item.id}','${iso}')" style="font-size:18px;color:var(--muted);opacity:0.4;cursor:pointer;flex-shrink:0;margin-left:8px">×</span></div>`});
+  priorities.forEach(item=>{
+    const isPinned=item.pinned;
+    html+=`<div class="priority-item" style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+      <span style="flex:1">${item.content}</span>
+      <div style="display:flex;gap:6px;flex-shrink:0;align-items:center">
+        <span onclick="togglePinPriority('${item.id}','${iso}',${!isPinned})" title="${isPinned?'Unpin':'Pin to dashboard'}" style="font-size:14px;cursor:pointer;opacity:${isPinned?'1':'0.3'}" >📌</span>
+        <span onclick="deletePlanItem('${item.id}','${iso}')" style="font-size:18px;color:var(--muted);opacity:0.4;cursor:pointer">×</span>
+      </div>
+    </div>`;
+  });
   html+=`<button class="add-btn" onclick="promptAddItem('priority','${iso}')">+ Add priority</button></div>`;
 
 
@@ -611,6 +633,15 @@ async function renderDailyPlan(date){
       if(target) target.scrollIntoView({inline:'center',behavior:'smooth'});
     }
   },100);
+}
+
+async function togglePinPriority(id, iso, pinned){
+  await db.from('plan_items').update({pinned}).eq('id',id);
+  delete planCache[iso];
+  await loadAll();
+  const scrollPos=document.getElementById('tab-dailyplan')?.scrollTop||0;
+  await renderDailyPlan(currentPlanDate);
+  setTimeout(()=>{if(document.getElementById('tab-dailyplan'))document.getElementById('tab-dailyplan').scrollTop=scrollPos;},150);
 }
 
 async function promptAddItem(type, iso){
@@ -797,14 +828,20 @@ async function clearStaffTime(){
 }
 
 async function selectTimeForDay(id,time,iso){
+  // Always persist to Supabase regardless of date
+  if(time){
+    await db.from('staff').update({shift_start:time}).eq('id',id).eq('shift_date',iso);
+  } else {
+    await db.from('staff').update({shift_start:null}).eq('id',id).eq('shift_date',iso);
+  }
+  // Update in-memory cache
   if(!stpTimes[iso])stpTimes[iso]={};
   stpTimes[iso][id]=time;
-  if(iso===todayISO()){await db.from("staff").update({shift_start:time}).eq("id",id);await loadAll();}
+  // Reload if today so dashboard/staff tab refresh
+  if(iso===todayISO()) await loadAll();
   closePicker();
   const container=document.getElementById('stp-container');
-  if(container){
-    container.innerHTML=renderSTP(currentPlanDate);
-  }
+  if(container) container.innerHTML=renderSTP(currentPlanDate);
 }
 
 function closePicker(){document.getElementById('picker-overlay').style.display='none'}
