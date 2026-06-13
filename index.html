@@ -414,7 +414,7 @@ function renderDashboard(){
     const iconBg=shortReg==='KPI'?'rgba(245,158,11,0.2)':shortReg==='OMO'?'rgba(52,211,153,0.15)':'rgba(255,77,77,0.15)';
     const iconColor=shortReg==='KPI'?'var(--amber)':shortReg==='OMO'?'var(--green)':'var(--red)';
     // Sector summary line
-    const times=acF.map(f=>{const dep=f.route&&f.route.startsWith('NAN');return(dep?'🛫':'🛬')+' '+(f.departure_time||'')}).join(' · ');
+    const times=acF.map(f=>{const dep=f.route&&f.route.startsWith('NAN');return(dep?'🛫':'🛬')+' '+(dep?(f.departure_time||''):(f.arrival_time||''))}).join(' · ');
     const sectors=acF.length>0?` · ${acF.length}s`:'';
     const subLine=acF.length>0?times+sectors:ac.status==='aog'?'Grounded — awaiting spares':ac.status==='mx'?'MX day — no flights':'No flights today';
     const hasAlert=conflict||urgent.length>0||ac.status==='aog';
@@ -563,7 +563,7 @@ async function renderDailyPlan(date){
     const mxNote=getMXNote(ac.registration,iso);
     html+=`<div class="ac-plan-block"><div class="ac-plan-header"><span class="ac-plan-reg">${ac.registration}</span><span class="ac-plan-crew">${crewDisplay}</span>${statusBadge(ac.status)}</div>`;
     if(mxNote)html+=`<div style="padding:6px 12px;font-size:11px;color:var(--amber);border-bottom:0.5px solid var(--border)">🔧 ${mxNote}</div>`;
-    if(acF.length>0){acF.forEach(f=>{const isDep=f.route&&f.route.startsWith('NAN');const emoji=isDep?'🛫':'🛬';html+=`<div class="fl-line"><span class="fl-t">${emoji} ${f.departure_time||''}</span><span class="fl-r">${f.route||''}</span>${f.is_vip?'<span class="badge badge-vip">VIP</span>':''}${transferBadge(f.transfer_type)}${f.pax_count>0?`<span style="font-size:11px;color:var(--muted)">${f.pax_count} pax</span>`:''}</div>`})}
+    if(acF.length>0){acF.forEach(f=>{const isDep=f.route&&f.route.startsWith('NAN');const emoji=isDep?'🛫':'🛬';const displayTime=isDep?(f.departure_time||''):(f.arrival_time||'');html+=`<div class="fl-line"><span class="fl-t">${emoji} ${displayTime}</span><span class="fl-r">${f.route||''}</span>${f.is_vip?'<span class="badge badge-vip">VIP</span>':''}${transferBadge(f.transfer_type)}${f.pax_count>0?`<span style="font-size:11px;color:var(--muted)">${f.pax_count} pax</span>`:''}</div>`})}
     else{html+=`<div class="fl-line" style="color:var(--muted);font-style:italic">${ac.status==='aog'?'Grounded — no flights':ac.status==='mx'?'MX day — no flights':'No flights scheduled'}</div>`}
     html+='</div>';
   });
@@ -897,7 +897,7 @@ function renderAircraft(){
         <div class="ac-tab-icon" style="background:${iconBg};color:${iconColor}">${shortReg}</div>
         <div class="ac-tab-info">
           <div class="ac-tab-reg">${ac.registration}</div>
-          <div class="ac-tab-times">${firstDep?`&#9992; <span>${firstDep.departure_time}</span>`:''}${lastArr&&lastArr!==firstDep?` &#8600; <span>${lastArr.departure_time}</span>`:''}${acF.length>0?` · <span>${acF.length}s</span>`:ac.status==='aog'?'<span style="color:var(--red)">Grounded</span>':ac.status==='mx'?'<span style="color:var(--blue)">MX day</span>':'<span>No flights</span>'}</div>
+          <div class="ac-tab-times">${firstDep?`&#9992; <span>${firstDep.departure_time}</span>`:''}${lastArr&&lastArr!==firstDep?` &#8600; <span>${lastArr.route&&lastArr.route.startsWith('NAN')?lastArr.departure_time:lastArr.arrival_time}</span>`:''}${acF.length>0?` · <span>${acF.length}s</span>`:ac.status==='aog'?'<span style="color:var(--red)">Grounded</span>':ac.status==='mx'?'<span style="color:var(--blue)">MX day</span>':'<span>No flights</span>'}</div>
         </div>
         ${statusBadge(ac.status)}
       </div>
@@ -981,7 +981,7 @@ function openMonthView(reg){
     if(isToday)rowClass='today-row';
     if(conflict)rowClass='has-conflict';
     if(dayF.length>0){
-      content='&#9992;'+(dayF[0].departure_time||'')+' &#8600;'+(dayF[dayF.length-1].departure_time||'')+' '+dayF.length+'s';
+      content='&#9992;'+(dayF[0].departure_time||'')+' &#8600;'+(dayF[dayF.length-1].route&&dayF[dayF.length-1].route.startsWith('NAN')?dayF[dayF.length-1].departure_time:dayF[dayF.length-1].arrival_time||'')+' '+dayF.length+'s';
       if(mxNote)content+=' <span class="mr-mx">· '+mxNote+'</span>';
       if(conflict)content+=' <span class="mr-conflict">⚠ Conflict</span>';
     } else if(mxNote){
